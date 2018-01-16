@@ -319,10 +319,9 @@ namespace VideoStateAxis
         private void Clip_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Border bor = sender as Border;
-            if(bor != null)
+            if (bor != null)
             {
-                bor.CaptureMouse();
-                double a = e.GetPosition(bor).X;
+                bor.ReleaseMouseCapture();
             }
         }
 
@@ -333,7 +332,11 @@ namespace VideoStateAxis
         /// <param name="e"></param>
         private void Clip_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            Border bor = sender as Border;
+            if (bor != null)
+            {
+                bor.CaptureMouse();
+            }
         }
 
         /// <summary>
@@ -344,9 +347,9 @@ namespace VideoStateAxis
         private void Clip_MouseMove(object sender, MouseEventArgs e)
         {
             Border bor = sender as Border;
-            if (bor != null)
+            if (bor != null && e.LeftButton == MouseButtonState.Pressed)
             {
-                bor.ReleaseMouseCapture();
+                _clipAreaBorder.Width = e.GetPosition(_clipCanvas).X;
             }
         }
 
@@ -392,8 +395,8 @@ namespace VideoStateAxis
                 Canvas.SetLeft(_timeLine, delta = delta < 0 ? 0 : (delta > _time_Point_MaxLeft ? _time_Point_MaxLeft : delta));   
                 _currentTime.Text = XToDateTime(delta);
                 _currentTime.Margin = _time_Point_MaxLeft != 0 && delta != 0 && _time_Point_MaxLeft - delta < 98 ?
-                    new Thickness(-100, 36, 0, 0) :
-                    new Thickness(13, 36, 0, 0);
+                    new Thickness(-120, 20, 0, 0) :
+                    new Thickness(10, 20, 0, 0);
             }
         }
 
@@ -444,13 +447,9 @@ namespace VideoStateAxis
         /// </summary>
         private void InitializeAxis()
         {
-            if (_axisCanvasTimeText != null)
-            {
-                _axisCanvasTimeText.Width = _scrollViewer.ActualWidth * _magnification+0.000000001;
-                AddTimeTextBlock();
-                AddTimeLine();
-                AddHisPie();
-            }
+            AddTimeTextBlock();
+            AddTimeLine();
+            AddHisPie();
         }
 
         /// <summary>
@@ -459,15 +458,19 @@ namespace VideoStateAxis
         /// <param name="HaveMathTextBlock">需要填充的时间文字数量</param>
         private void AddTimeTextBlock()
         {
-            _axisCanvasTimeText.Children.Clear();
-            for (int i = 0; i < 24; i++)
+            if(_axisCanvasTimeText != null)
             {
-                _axisCanvasTimeText.Children.Add((
-                    new TextBlock()
-                    {
-                        Text = i.ToString().PadLeft(2, '0') + ":00",
-                        Margin = new Thickness(Dial_Cell_H * i , 2, 0, 0)
-                    }));
+                _axisCanvasTimeText.Width = _scrollViewer.ActualWidth * _magnification + 0.000000001;
+                _axisCanvasTimeText.Children.Clear();
+                for (int i = 0; i < 24; i++)
+                {
+                    _axisCanvasTimeText.Children.Add((
+                        new TextBlock()
+                        {
+                            Text = i.ToString().PadLeft(2, '0') + ":00",
+                            Margin = new Thickness(Dial_Cell_H * i, 2, 0, 0)
+                        }));
+                }
             }
         }
 
@@ -477,17 +480,20 @@ namespace VideoStateAxis
         /// <param name="HaveMathTextBlock">需要填充的时间刻度数量</param>
         private void AddTimeLine()
         {
-            _axisCanvas.Children.Clear();
-            for (int i = 0; i < 24; i ++)
+            if(_axisCanvas != null)
             {
-                _axisCanvas.Children.Add(new Line()
+                _axisCanvas.Children.Clear();
+                for (int i = 0; i < 24; i++)
                 {
-                    X1 = Dial_Cell_H * i,
-                    Y1 = 0,
-                    X2 = Dial_Cell_H * i,
-                    Y2 = 4,
-                    StrokeThickness = 1
-                });
+                    _axisCanvas.Children.Add(new Line()
+                    {
+                        X1 = Dial_Cell_H * i,
+                        Y1 = 0,
+                        X2 = Dial_Cell_H * i,
+                        Y2 = 4,
+                        StrokeThickness = 1
+                    });
+                }
             }
         }
 

@@ -578,6 +578,10 @@
                                                 </StackPanel.Resources>
                                             </StackPanel>
                                         </Grid>
+                                        <!--剪辑模板-->
+                                        <Canvas Grid.Row="3" Margin="6 0 6 0">
+                                            <Rectangle HorizontalAlignment="Left" Fill="Red" Opacity="0.1" Width="{Binding ActualWidth,ElementName=Z_Parid_clipAreaBorder}" Height="{Binding ActualHeight,ElementName=Z_videoHistoryPanel}"></Rectangle>
+                                        </Canvas>
                                         <!--时间文字-->
                                         <Border Height="16" Panel.ZIndex="4" >
                                             <Canvas x:Name="Z_Parid__axisCanvasTimeText" Height="16" Background="#22272a">
@@ -606,7 +610,7 @@
                                             <Canvas x:Name="Z_Parid_clipCanvas" Background="#22272a" Height="16">
                                                 <StackPanel x:Name="AreaBar" Orientation="Horizontal" Height="14" Canvas.Left="0">
                                                     <Border x:Name="Z_Parid_clipStartBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
-                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="100" Background="#FF777777"></Border>
+                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="1000" Background="#FF777777"></Border>
                                                     <Border x:Name="Z_Parid_clipEndBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
                                                 </StackPanel>
                                             </Canvas>
@@ -614,7 +618,7 @@
                                         <!--时间轴指针-->
                                         <Canvas x:Name="Z_Parid_timePanel" Grid.Row="0" Grid.RowSpan="3" Panel.ZIndex="5">
                                             <Canvas x:Name="Z_Parid_timeLine">
-                                                <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#FF424853" FontSize="10" Margin="8,36,0,0" Visibility="Collapsed" />
+                                                <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#141414" FontSize="12"  Visibility="Collapsed" />
                                                 <Rectangle Width="1" Height="{Binding ElementName=Z_Parid_scrollViewer, Path=ActualHeight}" Fill="#FF4500" Margin="5 3 0 0"></Rectangle>
                                                 <Grid x:Name="Z_Parid_timePoint" Width="12" Height="15" Background="Transparent"  Cursor="Hand"  Margin="-0.5 0 0 0">
                                                     <Polygon StrokeThickness="0" Fill="#D2931A" Points="1,0 1,10 6,15 11,10 11,0" />
