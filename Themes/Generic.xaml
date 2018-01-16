@@ -457,7 +457,7 @@
                                 <Rectangle  Fill="#6ec7b3" Width="4" Height="4" HorizontalAlignment="Center" VerticalAlignment="Center" ></Rectangle>
                             </Grid>
                         </Grid>
-                        <TextBlock Grid.Column="1"  Text="剪辑控制" Foreground="White" VerticalAlignment="Center" Margin="3,0,0,1"/>
+                        <TextBlock Grid.Column="1"  Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center" Margin="3,0,0,1"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -480,6 +480,41 @@
         <Setter Property="FontWeight" Value="Bold"></Setter>
     </Style>
 
+    <!--ListBox容器外观+数据模板-->
+    <Style x:Key="ListBoxSty" TargetType="{x:Type ListBox}">
+        <!-- 时间轴项数据模板 -->
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Height="21">
+                        <CheckBox  Style="{StaticResource checkStyle}" IsChecked="{Binding Path=CameraChecked}"/>
+                        <TextBlock Text="{Binding Path=CameraName}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <!-- 纵向排列 -->
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <!-- 相机名称Listbox容器外观-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border Background="#2b3034" BorderBrush="Black" BorderThickness="1 1 0 1">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerTemplate}">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--VideoStateAxisControl控件模板-->
     <Style x:Name="VideoST" TargetType="{x:Type local:VideoStateAxisControl}">
         <Setter Property="Template">
@@ -500,20 +535,24 @@
                             </Setter>
                         </Style>
                     </ControlTemplate.Resources>
-                    <Border Background="#2b3034" BorderBrush="Black" BorderThickness="1"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Border Background="#2b3034" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="15"></RowDefinition>
-                                <RowDefinition Height="60"></RowDefinition>
+                                <RowDefinition Height="45"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="25"></RowDefinition>
                                 <RowDefinition Height="15"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="200"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
+                            <Border Background="Black" Grid.Row="2">
+                                <!--<ListBox Style="{StaticResource ListBoxSty}"></ListBox>-->
+                                <ScrollBar Template="{StaticResource VerticalScrollBarTemplate}"></ScrollBar>
+                            </Border>
                             <!--时间轴 主部分-->
                             <Border CornerRadius="5 5 0 0" BorderBrush="Black"  BorderThickness="1" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" >
                                 <ScrollViewer  x:Name="Z_Parid_scrollViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Template="{StaticResource ScrollViewerTemplate}" >
@@ -524,9 +563,24 @@
                                             <RowDefinition Height="16"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
                                         </Grid.RowDefinitions>
+                                        <!--历史视频时间轴-->
+                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Grid.Row="3" Margin="6,1,6,0" >
+                                            <StackPanel Orientation="Vertical" x:Name="Z_videoHistoryPanel" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="{x:Type Rectangle}">
+                                                        <Setter Property="Fill" Value="#FF67DFC4"/>
+                                                    </Style>
+                                                    <Style TargetType="{x:Type Canvas}">
+                                                        <Setter Property="Background" Value="#353b40"></Setter>
+                                                        <Setter Property="Height" Value="15"></Setter>
+                                                        <Setter Property="Margin" Value="0 3 0 3"></Setter>
+                                                    </Style>
+                                                </StackPanel.Resources>
+                                            </StackPanel>
+                                        </Grid>
                                         <!--时间文字-->
-                                        <Border Height="16" Panel.ZIndex="4" BorderBrush="Black" BorderThickness="0 1 0 0">
-                                            <Canvas x:Name="Z_Parid__axisCanvasTimeText" Height="16">
+                                        <Border Height="16" Panel.ZIndex="4" >
+                                            <Canvas x:Name="Z_Parid__axisCanvasTimeText" Height="16" Background="#22272a">
                                                 <Canvas.Resources>
                                                     <Style TargetType="{x:Type TextBlock}">
                                                         <Setter Property="FontSize" Value="10"/>
@@ -538,7 +592,7 @@
                                         </Border>
                                         <!--时间刻度-->
                                         <Border Height="5" Grid.Row="1" Panel.ZIndex="4" Margin="5 0 5 0" >
-                                            <Canvas x:Name="Z_Parid_axisCanvas" Height="5" HorizontalAlignment="Stretch" >
+                                            <Canvas x:Name="Z_Parid_axisCanvas" Height="5" HorizontalAlignment="Stretch" Background="#141414">
                                                 <Canvas.Resources>
                                                     <Style TargetType="{x:Type Line}">
                                                         <Setter Property="Stroke" Value="#c8c7c3"/>
@@ -548,12 +602,12 @@
                                             </Canvas>
                                         </Border>
                                         <!--剪辑控制-->
-                                        <Border Grid.Row="2" BorderBrush="Black" BorderThickness="0 1 0 1" >
-                                            <Canvas x:Name="AreaPanel">
-                                                <StackPanel x:Name="AreaBar" Orientation="Horizontal" Height="15" Canvas.Left="0">
-                                                    <Border x:Name="StartArea" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
-                                                    <Border x:Name="Area" Width="100" Background="#FF777777"></Border>
-                                                    <Border x:Name="EndArea" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
+                                        <Border Grid.Row="2" Panel.ZIndex="4" >
+                                            <Canvas x:Name="Z_Parid_clipCanvas" Background="#22272a" Height="16">
+                                                <StackPanel x:Name="AreaBar" Orientation="Horizontal" Height="14" Canvas.Left="0">
+                                                    <Border x:Name="Z_Parid_clipStartBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
+                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="100" Background="#FF777777"></Border>
+                                                    <Border x:Name="Z_Parid_clipEndBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
                                                 </StackPanel>
                                             </Canvas>
                                         </Border>
@@ -569,51 +623,23 @@
                                                 </Grid>
                                             </Canvas>
                                         </Canvas>
-                                        <!--历史视频时间轴-->
-                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Grid.Row="3" Margin="6,1,6,0" >
-                                            <Grid.Resources>
-                                                <Style TargetType="{x:Type Border}">
-                                                    <Setter Property="BorderBrush" Value="#6ec7b3"></Setter>
-                                                    <Setter Property="BorderThickness" Value="1"></Setter>
-                                                    <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-                                                    <Setter Property="Height" Value="25"></Setter>
-                                                    <Setter Property="Margin" Value="0,0,0,3"></Setter>
-                                                </Style>
-                                                <Style TargetType="{x:Type Polygon}">
-                                                    <Setter Property="Fill" Value="#6ec7b3"></Setter>
-                                                    <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
-                                                </Style>
-                                            </Grid.Resources>
-                                            <StackPanel Orientation="Vertical" x:Name="Z_videoHistoryPanel" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                <StackPanel.Resources>
-                                                    <Style TargetType="{x:Type Rectangle}">
-                                                        <Setter Property="Fill" Value="#FF67DFC4"/>
-                                                        <Setter Property="Height" Value="30"/>
-                                                        <Setter Property="StrokeThickness" Value="0"/>
-                                                    </Style>
-                                                    <Style TargetType="{x:Type Grid}">
-                                                        <Setter Property="Margin" Value="0 2 0 2"></Setter>
-                                                        <Setter Property="Height" Value="16"></Setter>
-                                                    </Style>
-                                                </StackPanel.Resources>
-                                            </StackPanel>
-                                        </Grid>
-                                     </Grid>
+                                    </Grid>
                                 </ScrollViewer>
                             </Border>
                             <!--状态栏：缩放滚动条，当前时间等-->
-                            <Border BorderBrush="Black" BorderThickness="1 0 1 1" Grid.Row="3" Grid.Column="1">
+                            <Border BorderBrush="Black" BorderThickness="1 0 1 1" Grid.Row="3" Grid.Column="1" Background="#22272a">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="250"></ColumnDefinition>
-                                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                      <!--时间轴缩放滚动条-->
                                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="5 0 0 0" VerticalAlignment="Center">
                                         <Viewbox Width="12" Height="12" HorizontalAlignment="Left">
                                             <Path Data="{StaticResource imgData}" Fill="#D2931A"></Path>
                                         </Viewbox>
-                                        <Slider x:Name="Z_Parid_zoomSlider" Width="96" Margin="10 0 10 0" Minimum="1" Maximum="4">
+                                        <Slider x:Name="Z_Parid_zoomSlider" Width="96" Margin="10 0 10 0" Minimum="1" Maximum="3">
                                             <Slider.Style>
                                                 <Style TargetType="{x:Type Slider}">
                                                     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
