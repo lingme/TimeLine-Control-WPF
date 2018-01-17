@@ -435,7 +435,7 @@
     </ControlTemplate>
     
     <!--checkBox 样式-->
-    <Style x:Key="checkStyle" TargetType="{x:Type CheckBox}">
+    <Style x:Key="checkSty" TargetType="{x:Type CheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="False" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource CheckBoxFocusVisual}" />
@@ -451,13 +451,13 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid Height="{TemplateBinding Height}" Width="{TemplateBinding Height}">
-                            <Rectangle Fill="Black" Opacity="0.1" Stroke="#6ec7b3" StrokeThickness="1" Width="10" Height="10"></Rectangle>
-                            <Rectangle x:Name="CheckBoxRectangleOut" Stroke="#6ec7b3" StrokeThickness="1" Width="10" Height="10" ></Rectangle>
+                            <Rectangle Fill="Black" Opacity="0.1" Stroke="#6ec7b3" StrokeThickness="1" Width="12" Height="12"></Rectangle>
+                            <Rectangle x:Name="CheckBoxRectangleOut" Stroke="{TemplateBinding Foreground}" StrokeThickness="1" Width="12" Height="12" ></Rectangle>
                             <Grid x:Name="CheckedMark" Width="20" Height="20" Visibility="Collapsed" >
-                                <Rectangle  Fill="#6ec7b3" Width="4" Height="4" HorizontalAlignment="Center" VerticalAlignment="Center" ></Rectangle>
+                                <Rectangle  Fill="{TemplateBinding Foreground}" Width="4" Height="4" HorizontalAlignment="Center" VerticalAlignment="Center" ></Rectangle>
                             </Grid>
                         </Grid>
-                        <TextBlock Grid.Column="1"  Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center" Margin="3,0,0,1"/>
+                        <TextBlock Grid.Column="1" FontSize="12"  Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -515,6 +515,8 @@
         </Setter>
     </Style>
 
+    <local:BoolConveterVisibility x:Key="BoolConveterVisibility"></local:BoolConveterVisibility>
+    
     <!--VideoStateAxisControl控件模板-->
     <Style x:Name="VideoST" TargetType="{x:Type local:VideoStateAxisControl}">
         <Setter Property="Template">
@@ -578,9 +580,9 @@
                                                 </StackPanel.Resources>
                                             </StackPanel>
                                         </Grid>
-                                        <!--剪辑模板-->
+                                        <!--剪辑蒙版-->
                                         <Canvas Grid.Row="3" Margin="6 0 6 0">
-                                            <Rectangle HorizontalAlignment="Left" Fill="Red" Opacity="0.1" Width="{Binding ActualWidth,ElementName=Z_Parid_clipAreaBorder}" Height="{Binding ActualHeight,ElementName=Z_videoHistoryPanel}"></Rectangle>
+                                            <Rectangle HorizontalAlignment="Left" Fill="Red" Opacity="0.2" Visibility="{Binding IsChecked,ElementName=clipCheck,Converter={StaticResource BoolConveterVisibility}}" Width="{Binding ActualWidth,ElementName=Z_Parid_clipAreaBorder}" Height="{Binding ActualHeight,ElementName=Z_videoHistoryPanel}"></Rectangle>
                                         </Canvas>
                                         <!--时间文字-->
                                         <Border Height="16" Panel.ZIndex="4" >
@@ -595,7 +597,7 @@
                                             </Canvas>
                                         </Border>
                                         <!--时间刻度-->
-                                        <Border Height="5" Grid.Row="1" Panel.ZIndex="4" Margin="5 0 5 0" >
+                                        <Border Height="5" Grid.Row="1" Panel.ZIndex="4" Margin="6 0 6 0" >
                                             <Canvas x:Name="Z_Parid_axisCanvas" Height="5" HorizontalAlignment="Stretch" Background="#141414">
                                                 <Canvas.Resources>
                                                     <Style TargetType="{x:Type Line}">
@@ -608,17 +610,17 @@
                                         <!--剪辑控制-->
                                         <Border Grid.Row="2" Panel.ZIndex="4" >
                                             <Canvas x:Name="Z_Parid_clipCanvas" Background="#22272a" Height="16">
-                                                <StackPanel x:Name="AreaBar" Orientation="Horizontal" Height="14" Canvas.Left="0">
+                                                <StackPanel x:Name="Z_Parid_clipStackPanel" Orientation="Horizontal" Height="14" Canvas.Left="0">
                                                     <Border x:Name="Z_Parid_clipStartBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
-                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="1000" Background="#FF777777"></Border>
+                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="100" Background="#FF777777"></Border>
                                                     <Border x:Name="Z_Parid_clipEndBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
                                                 </StackPanel>
+                                                <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#141414" FontSize="11"  Visibility="Collapsed"/>
                                             </Canvas>
                                         </Border>
                                         <!--时间轴指针-->
                                         <Canvas x:Name="Z_Parid_timePanel" Grid.Row="0" Grid.RowSpan="3" Panel.ZIndex="5">
                                             <Canvas x:Name="Z_Parid_timeLine">
-                                                <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#141414" FontSize="12"  Visibility="Collapsed" />
                                                 <Rectangle Width="1" Height="{Binding ElementName=Z_Parid_scrollViewer, Path=ActualHeight}" Fill="#FF4500" Margin="5 3 0 0"></Rectangle>
                                                 <Grid x:Name="Z_Parid_timePoint" Width="12" Height="15" Background="Transparent"  Cursor="Hand"  Margin="-0.5 0 0 0">
                                                     <Polygon StrokeThickness="0" Fill="#D2931A" Points="1,0 1,10 6,15 11,10 11,0" />
@@ -666,8 +668,17 @@
                                         <TextBlock Text="{Binding Value,ElementName=Z_Parid_zoomSlider,StringFormat={}{0:F1}}" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
                                         <TextBlock Text=" x" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
-                                    <!--状态区域，显示指针时间等-->
+                                    <!--剪辑控制开启，剪辑控制时间范围-->
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Foreground" Value="#D2931A"></Setter>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <CheckBox x:Name="clipCheck" Style="{StaticResource checkSty}" Content="开启剪辑控制" Foreground="#D2931A" VerticalAlignment="Center"></CheckBox>
+                                    </StackPanel>
+                                    <!--状态区域，显示指针时间等-->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel.Resources>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Foreground" Value="#D2931A"></Setter>
