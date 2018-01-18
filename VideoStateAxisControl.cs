@@ -40,11 +40,13 @@ namespace VideoStateAxis
         private ScrollViewer _scrollViewer;                 //滚动视图
         private Canvas _axisCanvas;                          //时间刻度尺容器
         private Canvas _axisCanvasTimeText;             //时间刻度时间文字容器
-        private Grid _timePoint;                                //进度指针
+        private Slider _zoomSlider;                          //缩放时间轴滑块
+
         private TextBlock _currentTime;                    //进度指针时间
         private Canvas _timePanel;                           //进度容器
         private Canvas _timeLine;                             //进度指针容器
-        private Slider _zoomSlider;                          //缩放时间轴滑块
+        private Grid _timePoint;                                //进度指针
+
         private Canvas _clipCanvas;                         //剪辑控制移动容器
         private Border _clipStartBorder;                  //剪辑左调解
         private Border _clipAreaBorder;                  //剪辑滑块
@@ -190,6 +192,11 @@ namespace VideoStateAxis
         private double StartPanelOffset = 0;
 
         /// <summary>
+        /// 剪辑滑块宽度
+        /// </summary>
+        private double ClipAreaWidth = 0;
+
+        /// <summary>
         /// 时间轴缩放比例
         /// </summary>
         private double Magnification = 1;
@@ -201,7 +208,7 @@ namespace VideoStateAxis
         /// <param name="e"></param>
         private static void OnTimeChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
         {
-            VideoStateAxisControl AxisOb = (VideoStateAxisControl)d;
+            VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
             if(AxisOb != null)
             {
                 AxisOb.InitializeAxis();
@@ -227,7 +234,7 @@ namespace VideoStateAxis
         /// <param name="e"></param>
         private static void OnHistoryVideoSourcesChanged(DependencyObject d ,DependencyPropertyChangedEventArgs e)
         {
-            VideoStateAxisControl AxisOb = (VideoStateAxisControl)d;
+            VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
             if(AxisOb.HistoryVideoSources != null && AxisOb.HistoryVideoSources.Count() > 0)
             {
                 AxisOb.HistoryVideoSources.CollectionChanged += (s , o)=> 
@@ -322,6 +329,7 @@ namespace VideoStateAxis
                 bor.CaptureMouse();
                 StartClipOffset = e.GetPosition(_clipCanvas).X;
                 StartPanelOffset = Canvas.GetLeft(_clipStackPanel);
+                ClipAreaWidth = _clipAreaBorder.ActualWidth;
             }
         }
 
@@ -340,18 +348,34 @@ namespace VideoStateAxis
                     case Parid_clipStartBorder:
                         ClipStart(e.GetPosition(_clipCanvas));
                         break;
-                    case Parid_clipAreaBorder:
-                        ClipArea(e.GetPosition(_clipCanvas));
-                        break;
+
                     case Parid_clipEndBorder:
                         ClipEnd(e.GetPosition(_clipCanvas));
+                        break;
+
+                    case Parid_clipAreaBorder:
+                        MoveClipArea(e.GetPosition(_clipCanvas));
                         break;
                 }
             }
         }
 
         /// <summary>
-        /// 剪辑结束滑块
+        /// 剪辑开始滑块增量
+        /// </summary>
+        /// <param name="pt"></param>
+        private void ClipStart(Point pt)
+        {
+            double Increment = ClipAreaWidth  - ( Canvas.GetLeft(_clipStackPanel) <= 0 ? 0 : pt.X - StartClipOffset) ;
+            if(Increment >= 0 )
+            {
+                _clipAreaBorder.Width = pt.X > 0 ? Increment : _clipAreaBorder.Width;
+                MoveClipArea(pt);
+            }
+        }
+
+        /// <summary>
+        /// 剪辑结束滑块增量
         /// </summary>
         private void ClipEnd(Point pt)
         {
@@ -360,21 +384,12 @@ namespace VideoStateAxis
                 clipWidth > _axisCanvas.ActualWidth - Canvas.GetLeft(_clipStackPanel)  ? 
                 _axisCanvas.ActualWidth - Canvas.GetLeft(_clipStackPanel) : clipWidth;
         }
-        
-        /// <summary>
-        /// 剪辑开始滑块
-        /// </summary>
-        /// <param name="pt"></param>
-        private void ClipStart(Point pt)
-        {
-            
-        }
 
         /// <summary>
         /// 剪辑滚动滑块
         /// </summary>
         /// <param name="pt"></param>
-        private void ClipArea(Point pt)
+        private void MoveClipArea(Point pt)
         {
             double clipLeft = StartPanelOffset + (pt.X - StartClipOffset) < 0 ? 0 : 
                 StartPanelOffset + (pt.X - StartClipOffset) > _clipCanvas.ActualWidth - _clipAreaBorder.Width ?
@@ -393,7 +408,7 @@ namespace VideoStateAxis
             Magnification = Math.Round(e.NewValue , 2);
             if(!double.IsNaN(Canvas.GetLeft(_timeLine)))
             {
-                Canvas.SetLeft(_timeLine , AxisTime.Hour * Dial_Cell_H + AxisTime.Minute * Dial_Cell_M + AxisTime.Second * Dial_Cell_S);
+                RefreshTimeLineLeft(AxisTime);
             }
             InitializeAxis();
         }
@@ -499,7 +514,7 @@ namespace VideoStateAxis
         {
             if(_axisCanvasTimeText != null)
             {
-                _axisCanvasTimeText.Width = _scrollViewer.ActualWidth * Magnification + 0.1;
+                _axisCanvasTimeText.Width = (_scrollViewer.ActualWidth - 10) * Magnification ;
                 _axisCanvasTimeText.Children.Clear();
                 for (int i = 0; i < 24; i++)
                 {
@@ -553,12 +568,12 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 计算 Rectangle
+        /// 计算填充时间轴查询结果
         /// </summary>
         private void DisplayData(Dictionary<KeyValuePair<int, int>,bool> dic)
         {
             DateTime serTime = SerStateTime;
-            Canvas TimeCanvas = new Canvas(){ Width = _scrollViewer.ActualWidth - 10 };
+            Canvas TimeCanvas = new Canvas(){ Width = (_scrollViewer.ActualWidth - 10) * Magnification };
             foreach (var item in dic)
             {
                 TimeCanvas.Children.Add(new Rectangle()
@@ -585,8 +600,7 @@ namespace VideoStateAxis
             {
                 if(item.Success)
                 {
-                    int ins = dic.Count;
-                    dic.Add(new KeyValuePair<int, int>(ins++, item.Value.Length), item.Value.Contains('1') ? true : false);
+                    dic.Add(new KeyValuePair<int, int>(dic.Count+1, item.Value.Length), item.Value.Contains('1') ? true : false);
                 }
             }
             return dic;

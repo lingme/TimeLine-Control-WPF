@@ -593,7 +593,6 @@
                                                         <Setter Property="Foreground" Value="#c8c7c3"/>
                                                     </Style>
                                                 </Canvas.Resources>
-                                                <TextBlock x:Name="Z_Parid__testTextBlock" Text="00:00"></TextBlock>
                                             </Canvas>
                                         </Border>
                                         <!--时间刻度-->
