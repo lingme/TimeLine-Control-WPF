@@ -457,7 +457,7 @@
                                 <Rectangle  Fill="{TemplateBinding Foreground}" Width="4" Height="4" HorizontalAlignment="Center" VerticalAlignment="Center" ></Rectangle>
                             </Grid>
                         </Grid>
-                        <TextBlock Grid.Column="1" FontSize="12"  Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <TextBlock Grid.Column="1" FontSize="12"  Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="3,0,0,0.5"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -570,7 +570,7 @@
                                             <StackPanel Orientation="Vertical" x:Name="Z_videoHistoryPanel" HorizontalAlignment="Left" VerticalAlignment="Top" >
                                                 <StackPanel.Resources>
                                                     <Style TargetType="{x:Type Rectangle}">
-                                                        <Setter Property="Fill" Value="#FF67DFC4"/>
+                                                        <Setter Property="Fill" Value="#5bad9b"/>
                                                     </Style>
                                                     <Style TargetType="{x:Type Canvas}">
                                                         <Setter Property="Background" Value="#353b40"></Setter>
@@ -612,7 +612,7 @@
                                             <Canvas x:Name="Z_Parid_clipCanvas" Background="#22272a" Height="16">
                                                 <StackPanel x:Name="Z_Parid_clipStackPanel" Orientation="Horizontal" Height="14" Canvas.Left="0">
                                                     <Border x:Name="Z_Parid_clipStartBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
-                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="100" Background="#FF777777"></Border>
+                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="100" Background="#FF777777" Cursor="Hand"></Border>
                                                     <Border x:Name="Z_Parid_clipEndBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
                                                 </StackPanel>
                                                 <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#141414" FontSize="11"  Visibility="Collapsed"/>
@@ -636,7 +636,7 @@
                             <Border BorderBrush="Black" BorderThickness="1 0 1 1" Grid.Row="3" Grid.Column="1" Background="#22272a">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="250"></ColumnDefinition>
+                                        <ColumnDefinition Width="260"></ColumnDefinition>
                                         <ColumnDefinition Width="1*"></ColumnDefinition>
                                         <ColumnDefinition Width="1*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
@@ -664,7 +664,7 @@
                                         <Viewbox Width="17" Height="17" HorizontalAlignment="Right" Margin="0 0 0 2">
                                             <Path Data="{StaticResource imgData}" Fill="#D2931A" ></Path>
                                         </Viewbox>
-                                        <TextBlock Text="缩放等级：" Foreground="#D2931A" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
+                                        <TextBlock Text="时间轴缩放：" Foreground="#D2931A" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
                                         <TextBlock Text="{Binding Value,ElementName=Z_Parid_zoomSlider,StringFormat={}{0:F1}}" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
                                         <TextBlock Text=" x" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
                                     </StackPanel>
@@ -675,7 +675,7 @@
                                                 <Setter Property="Foreground" Value="#D2931A"></Setter>
                                             </Style>
                                         </StackPanel.Resources>
-                                        <CheckBox x:Name="clipCheck" Style="{StaticResource checkSty}" Content="开启剪辑控制" Foreground="#D2931A" VerticalAlignment="Center"></CheckBox>
+                                        <CheckBox x:Name="clipCheck" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" VerticalAlignment="Center"></CheckBox>
                                     </StackPanel>
                                     <!--状态区域，显示指针时间等-->
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

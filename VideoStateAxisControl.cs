@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -67,7 +69,7 @@ namespace VideoStateAxis
 
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
-            typeof(IEnumerable<VideoStateItem>), 
+            typeof(ObservableCollection<VideoStateItem>), 
             typeof(VideoStateAxisControl), 
             new PropertyMetadata(null, OnHistoryVideoSourcesChanged, CoerceHistoryVideoSrouces));
 
@@ -86,7 +88,8 @@ namespace VideoStateAxis
         public static readonly DependencyProperty AxisTimeProperty = DependencyProperty.Register(
             "AxisTime",
             typeof(DateTime),
-            typeof(VideoStateAxisControl));
+            typeof(VideoStateAxisControl),
+            new PropertyMetadata(OnAxisTimeChanged));
 
         public static readonly DependencyProperty ClipStartTimeProperty = DependencyProperty.Register(
             "ClipStartTime",
@@ -119,7 +122,7 @@ namespace VideoStateAxis
         /// <summary>
         /// 指针时间
         /// </summary>
-        private DateTime AxisTime
+        public DateTime AxisTime
         {
             get { return (DateTime)GetValue(AxisTimeProperty); }
             set { SetValue(AxisTimeProperty, value); }
@@ -146,9 +149,9 @@ namespace VideoStateAxis
         /// <summary>
         /// 历史视频来源列表
         /// </summary>
-        public IEnumerable<VideoStateItem> HistoryVideoSources
+        public ObservableCollection<VideoStateItem> HistoryVideoSources
         {
-            get { return (IEnumerable<VideoStateItem>)GetValue(HistoryVideoSourceProperty); }
+            get { return (ObservableCollection<VideoStateItem>)GetValue(HistoryVideoSourceProperty); }
             set { SetValue(HistoryVideoSourceProperty, value); }
         }
 
@@ -157,10 +160,7 @@ namespace VideoStateAxis
         /// </summary>
         private double Dial_Cell_H
         {
-            get
-            {
-                return _scrollViewer == null ? 0 : ((_scrollViewer.ActualWidth - 10) * Magnification ) / 24;
-            }
+            get { return _scrollViewer == null ? 0 : ((_scrollViewer.ActualWidth - 10) * Magnification ) / 24; }
         }
 
         /// <summary>
@@ -168,10 +168,7 @@ namespace VideoStateAxis
         /// </summary>
         private double Dial_Cell_M
         {
-            get
-            {
-                return Dial_Cell_H / 60;
-            }
+            get { return Dial_Cell_H / 60; }
         }
 
         /// <summary>
@@ -179,10 +176,7 @@ namespace VideoStateAxis
         /// </summary>
         private double Dial_Cell_S
         {
-            get
-            {
-                return Dial_Cell_M / 60;
-            }
+            get { return Dial_Cell_M / 60; }
         }
 
         /// <summary>
@@ -236,7 +230,25 @@ namespace VideoStateAxis
             VideoStateAxisControl AxisOb = (VideoStateAxisControl)d;
             if(AxisOb.HistoryVideoSources != null && AxisOb.HistoryVideoSources.Count() > 0)
             {
+                AxisOb.HistoryVideoSources.CollectionChanged += (s , o)=> 
+                {
+                    AxisOb.InitializeAxis();
+                };
                 AxisOb.InitializeAxis();
+            }
+        }
+
+        /// <summary>
+        /// 指针时间刷新指针位置
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="e"></param>
+        private static void OnAxisTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
+            if (AxisOb != null && e.NewValue != e.OldValue)
+            {
+                AxisOb.RefreshTimeLineLeft((DateTime)e.NewValue);
             }
         }
 
@@ -267,52 +279,19 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 获得实例项
+        /// 通过事件刷新指针位置
         /// </summary>
-        public override void OnApplyTemplate()
+        /// <param name="dt"></param>
+        private void RefreshTimeLineLeft(DateTime dt)
         {
-            _timePanel = GetTemplateChild(Parid_timePanel) as Canvas;
-            _timeLine = GetTemplateChild(Parid_timeLine) as Canvas;
-            _axisCanvas = GetTemplateChild(Parid_axisCanvas) as Canvas;
-            _videoHistoryPanel = GetTemplateChild(Parid_videoHistoryPanel) as StackPanel;
-            _axisCanvasTimeText = GetTemplateChild(Parid__axisCanvasTimeText) as Canvas;
-            _clipCanvas = GetTemplateChild(Parid_clipCanvas) as Canvas;
-            _clipStackPanel = GetTemplateChild(Parid_clipStackPanel) as StackPanel;
-            if ((_zoomSlider = GetTemplateChild(Parid_zoomSlider) as Slider) != null)
+            TimeSpan ts = dt - DateTime.Parse(SerStateTime.ToString("yyyy-MM-dd 00:00:00"));
+            if (ts.Days <= 1 && ts.Seconds >= 0)
             {
-                _zoomSlider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(_zoomSlider_ValueChanged);
-            }
-            if ((_timePoint = GetTemplateChild(Parid_timePoint) as Grid) != null)
-            {
-                _timePoint.MouseLeftButtonDown += new MouseButtonEventHandler(timePoint_MouseLeftButtonDown);
-                _timePoint.MouseLeftButtonUp += new MouseButtonEventHandler(timePoint_MouseLeftButtonUp);
-                _timePoint.MouseMove += new MouseEventHandler(timePoint_MouseMove);
-            }
-            if ((_scrollViewer = GetTemplateChild(Parid_scrollViewer) as ScrollViewer) != null)
-            {
-                _scrollViewer.ScrollChanged += new ScrollChangedEventHandler(scrollViewer_Changed);
-            }
-            if((_currentTime = GetTemplateChild(Parid_currentTime) as TextBlock) != null)
-            {
-                _currentTime.Text = SerStateTime.ToString("yyyy-MM-dd 00:00:00");
-            }
-            if ((_clipEndBorder = GetTemplateChild(Parid_clipEndBorder) as Border) != null)
-            {
-                _clipEndBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
-                _clipEndBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
-                _clipEndBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
-            }
-            if ((_clipAreaBorder = GetTemplateChild(Parid_clipAreaBorder) as Border) != null)
-            {
-                _clipAreaBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
-                _clipAreaBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
-                _clipAreaBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
-            }
-            if ((_clipStartBorder = GetTemplateChild(Parid_clipStartBorder) as Border) != null)
-            {
-                _clipStartBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
-                _clipStartBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
-                _clipStartBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
+                Canvas.SetLeft(_timeLine, 
+                    Dial_Cell_H * (ts.Days == 1 ? 23 : dt.Hour) + 
+                    Dial_Cell_M * (ts.Days == 1 ? 59 : dt.Minute)+ 
+                    Dial_Cell_S * (ts.Days == 1 ? 59 : dt.Second));
+                _currentTime.Text = dt.ToString("yyyy-MM-dd HH:mm:ss");
             }
         }
 
@@ -327,10 +306,6 @@ namespace VideoStateAxis
             if (bor != null)
             {
                 bor.ReleaseMouseCapture();
-                if(bor.Name != Parid_clipAreaBorder)
-                {
-                    _currentTime.Visibility = Visibility.Collapsed;
-                }
             }
         }
 
@@ -345,15 +320,8 @@ namespace VideoStateAxis
             if (bor != null)
             {
                 bor.CaptureMouse();
-                if(bor.Name != Parid_clipAreaBorder)
-                {
-                    _currentTime.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    StartClipOffset = e.GetPosition(_clipCanvas).X;
-                    StartPanelOffset = Canvas.GetLeft(_clipStackPanel);
-                }
+                StartClipOffset = e.GetPosition(_clipCanvas).X;
+                StartPanelOffset = Canvas.GetLeft(_clipStackPanel);
             }
         }
 
@@ -387,10 +355,10 @@ namespace VideoStateAxis
         /// </summary>
         private void ClipEnd(Point pt)
         {
-            TimeLine_Resver(pt.X , TimeLineType.Clip);
-            double clipWidth = pt.X - Canvas.GetLeft(_clipStackPanel) - 5;
-            _clipAreaBorder.Width = clipWidth <= 0 ? 0 : (clipWidth > _axisCanvas.ActualWidth ? _axisCanvas.ActualWidth: clipWidth);
-            _currentTime.Visibility = _clipAreaBorder.Width <= 0 ? Visibility.Collapsed : Visibility.Visible;
+            double clipWidth = pt.X - Canvas.GetLeft(_clipStackPanel) ;
+            _clipAreaBorder.Width = clipWidth <= 0 ? 0 : 
+                clipWidth > _axisCanvas.ActualWidth - Canvas.GetLeft(_clipStackPanel)  ? 
+                _axisCanvas.ActualWidth - Canvas.GetLeft(_clipStackPanel) : clipWidth;
         }
         
         /// <summary>
@@ -408,7 +376,11 @@ namespace VideoStateAxis
         /// <param name="pt"></param>
         private void ClipArea(Point pt)
         {
-            Canvas.SetLeft(_clipStackPanel, StartPanelOffset + (pt.X - StartClipOffset));
+            double clipLeft = StartPanelOffset + (pt.X - StartClipOffset) < 0 ? 0 : 
+                StartPanelOffset + (pt.X - StartClipOffset) > _clipCanvas.ActualWidth - _clipAreaBorder.Width ?
+                _axisCanvas.ActualWidth - _clipAreaBorder.Width :
+                StartPanelOffset + (pt.X - StartClipOffset);
+            Canvas.SetLeft(_clipStackPanel, clipLeft);
         }
 
         /// <summary>
@@ -450,9 +422,8 @@ namespace VideoStateAxis
             {
                 double delta = s.GetPosition(_timePanel).X;
                 double timePointMaxLeft = _timePanel.ActualWidth - _timePoint.ActualWidth;
-                double currentTimeMaxLeft = _timePanel.ActualWidth - (_currentTime.ActualWidth + 10);
                 Canvas.SetLeft(_timeLine, delta = delta < 0 ? 0 : (delta > timePointMaxLeft ? timePointMaxLeft : delta));
-                TimeLine_Resver(delta , TimeLineType.TimeLine);
+                TimeLine_Resver(delta);
             }
         }
 
@@ -460,12 +431,10 @@ namespace VideoStateAxis
         /// 刷新时间指示器坐标位置
         /// </summary>
         /// <param name="delta">鼠标位于Canvas坐标X</param>
-        /// <param name="isTimeLine">是剪辑控制还是指针</param>
-        private void TimeLine_Resver(double delta , TimeLineType type)
+        private void TimeLine_Resver(double delta)
         {
-            delta = type == TimeLineType.TimeLine ? delta : delta - 5;
             double timePointMaxLeft = _timePanel.ActualWidth - _timePoint.ActualWidth;
-            double currentTimeMaxLeft = _timePanel.ActualWidth - (_currentTime.ActualWidth + 10);
+            double currentTimeMaxLeft = _timePanel.ActualWidth - _currentTime.ActualWidth;
             _currentTime.Text = XToDateTime(delta < 0 ? 0 : (delta > timePointMaxLeft ? timePointMaxLeft : delta));
             _currentTime.Margin = delta < currentTimeMaxLeft ?
                 new Thickness(delta < 0 ? 10 : delta + 10, 0, 0, 0) :
@@ -530,7 +499,7 @@ namespace VideoStateAxis
         {
             if(_axisCanvasTimeText != null)
             {
-                _axisCanvasTimeText.Width = _scrollViewer.ActualWidth * Magnification + 0.000000001;
+                _axisCanvasTimeText.Width = _scrollViewer.ActualWidth * Magnification + 0.1;
                 _axisCanvasTimeText.Children.Clear();
                 for (int i = 0; i < 24; i++)
                 {
@@ -560,7 +529,7 @@ namespace VideoStateAxis
                         X1 = Dial_Cell_H * i,
                         Y1 = 0,
                         X2 = Dial_Cell_H * i,
-                        Y2 = 4,
+                        Y2 = 5,
                         StrokeThickness = 1
                     });
                 }
@@ -630,35 +599,102 @@ namespace VideoStateAxis
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(VideoStateAxisControl), new FrameworkPropertyMetadata(typeof(VideoStateAxisControl)));
         }
-    }
 
-    /// <summary>
-    /// 时间指示器类型
-    /// </summary>
-    public enum TimeLineType
-    {
-        TimeLine,
-        Clip
+        /// <summary>
+        /// 获得实例项
+        /// </summary>
+        public override void OnApplyTemplate()
+        {
+            _timePanel = GetTemplateChild(Parid_timePanel) as Canvas;
+            _timeLine = GetTemplateChild(Parid_timeLine) as Canvas;
+            _axisCanvas = GetTemplateChild(Parid_axisCanvas) as Canvas;
+            _videoHistoryPanel = GetTemplateChild(Parid_videoHistoryPanel) as StackPanel;
+            _axisCanvasTimeText = GetTemplateChild(Parid__axisCanvasTimeText) as Canvas;
+            _clipCanvas = GetTemplateChild(Parid_clipCanvas) as Canvas;
+            _clipStackPanel = GetTemplateChild(Parid_clipStackPanel) as StackPanel;
+            if ((_zoomSlider = GetTemplateChild(Parid_zoomSlider) as Slider) != null)
+            {
+                _zoomSlider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(_zoomSlider_ValueChanged);
+            }
+            if ((_timePoint = GetTemplateChild(Parid_timePoint) as Grid) != null)
+            {
+                _timePoint.MouseLeftButtonDown += new MouseButtonEventHandler(timePoint_MouseLeftButtonDown);
+                _timePoint.MouseLeftButtonUp += new MouseButtonEventHandler(timePoint_MouseLeftButtonUp);
+                _timePoint.MouseMove += new MouseEventHandler(timePoint_MouseMove);
+            }
+            if ((_scrollViewer = GetTemplateChild(Parid_scrollViewer) as ScrollViewer) != null)
+            {
+                _scrollViewer.ScrollChanged += new ScrollChangedEventHandler(scrollViewer_Changed);
+            }
+            if ((_currentTime = GetTemplateChild(Parid_currentTime) as TextBlock) != null)
+            {
+                _currentTime.Text = SerStateTime.ToString("yyyy-MM-dd 00:00:00");
+            }
+            if ((_clipEndBorder = GetTemplateChild(Parid_clipEndBorder) as Border) != null)
+            {
+                _clipEndBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
+                _clipEndBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
+                _clipEndBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
+            }
+            if ((_clipAreaBorder = GetTemplateChild(Parid_clipAreaBorder) as Border) != null)
+            {
+                _clipAreaBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
+                _clipAreaBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
+                _clipAreaBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
+            }
+            if ((_clipStartBorder = GetTemplateChild(Parid_clipStartBorder) as Border) != null)
+            {
+                _clipStartBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
+                _clipStartBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
+                _clipStartBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
+            }
+        }
     }
 
     /// <summary>
     /// 时间轴对象
     /// </summary>
-    public class VideoStateItem
+    public class VideoStateItem : INotifyPropertyChanged
     {
+        private string _cameraName;
         /// <summary>
         /// 相机名称
         /// </summary>
-        public string CameraName { get; set; }
+        public string CameraName
+        {
+            get => _cameraName;
+            set { _cameraName = value; OnPropertyChanged("CameraName"); }
+        }
 
+        private bool _cameraChedcked;
         /// <summary>
         /// 相机是否选中
         /// </summary>
-        public bool CameraChecked { get; set; }
+        public bool CameraChecked
+        {
+            get => _cameraChedcked;
+            set { _cameraChedcked = value; OnPropertyChanged("CameraChecked"); }
+        }
 
+        private char[] _axisHistoryTimeList;
         /// <summary>
         /// 相机历史视频视频时间集
         /// </summary>
-        public char[] AxisHistoryTimeList { get; set; }
+        public char[] AxisHistoryTimeList
+        {
+            get => _axisHistoryTimeList;
+            set { _axisHistoryTimeList = value; OnPropertyChanged("AxisHistoryTimeList"); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }
