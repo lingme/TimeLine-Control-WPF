@@ -70,7 +70,7 @@
     <!--Sider中间滑块样式-->
     <ControlTemplate x:Key="SliderThumbHorizontalDefault" TargetType="{x:Type Thumb}">
         <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Grid x:Name="Z_Parid_timePoint" Width="12" Height="15" Background="Transparent"  Cursor="Hand" Canvas.Top="0">
+            <Grid Width="12" Height="15" Background="Transparent"  Cursor="Hand" Canvas.Top="0">
                 <Polygon StrokeThickness="0" Fill="#D2931A" Points="1,1 1,10 6,15 11,10 11,1" />
                 <Rectangle Width="6" Height="1" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-6,0,0"/>
                 <Rectangle Width="6" Height="1" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
