@@ -33,6 +33,7 @@ namespace VideoStateAxis
     [TemplatePart(Name = Parid_clipAreaBorder)]
     [TemplatePart(Name = Parid_clipEndBorder)]
     [TemplatePart(Name = Parid_clipStackPanel)]
+    [TemplatePart(Name = Parid_clipOff)]
 
     public class VideoStateAxisControl : Control
     {
@@ -52,6 +53,7 @@ namespace VideoStateAxis
         private Border _clipAreaBorder;                  //剪辑滑块
         private Border _clipEndBorder;                   //剪辑右调解
         private StackPanel _clipStackPanel;              //剪辑滑块容器
+        private CheckBox _clipOff;                           //是否开启剪辑控制
 
         private const string Parid_axisCanvas = "Z_Parid_axisCanvas";
         private const string Parid__axisCanvasTimeText = "Z_Parid__axisCanvasTimeText";
@@ -68,24 +70,25 @@ namespace VideoStateAxis
         private const string Parid_clipAreaBorder = "Z_Parid_clipAreaBorder";
         private const string Parid_clipEndBorder = "Z_Parid_clipEndBorder";
         private const string Parid_clipStackPanel = "Z_Parid_clipStackPanel";
+        private const string Parid_clipOff = "Z_Parid_clipOff";
 
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
             typeof(ObservableCollection<VideoStateItem>), 
             typeof(VideoStateAxisControl), 
-            new PropertyMetadata(null, OnHistoryVideoSourcesChanged, CoerceHistoryVideoSrouces));
+            new PropertyMetadata(null, OnHistoryVideoSourcesChanged));
 
         public static readonly DependencyProperty StateTimeProperty = DependencyProperty.Register(
             "SerStateTime", 
             typeof(DateTime), 
             typeof(VideoStateAxisControl), 
-            new PropertyMetadata(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 00:00:00")), OnTimeChanged, CoerceTime));
+            new PropertyMetadata(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 00:00:00")), OnTimeChanged));
 
         public static readonly DependencyProperty EndTimeProperty = DependencyProperty.Register(
             "SerEndTime", 
             typeof(DateTime), 
             typeof(VideoStateAxisControl), 
-            new PropertyMetadata(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 23:59:59")), OnTimeChanged, CoerceTime));
+            new PropertyMetadata(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 23:59:59")), OnTimeChanged));
 
         public static readonly DependencyProperty AxisTimeProperty = DependencyProperty.Register(
             "AxisTime",
@@ -102,6 +105,21 @@ namespace VideoStateAxis
             "ClipEndTime", 
             typeof(DateTime), 
             typeof(VideoStateAxisControl));
+
+        public static readonly DependencyProperty ClipOffProperty = DependencyProperty.Register(
+            "ClipOff", 
+            typeof(bool), 
+            typeof(VideoStateAxisControl),
+            new PropertyMetadata(OnClipOffChanged));
+
+        /// <summary>
+        /// 剪辑开启控制
+        /// </summary>
+        public bool ClipOff
+        {
+            get { return (bool)GetValue(ClipOffProperty); }
+            set { SetValue(ClipOffProperty, value); }
+        }
 
         /// <summary>
         /// 剪辑结束时间
@@ -162,7 +180,7 @@ namespace VideoStateAxis
         /// </summary>
         private double Dial_Cell_H
         {
-            get { return _scrollViewer == null ? 0 : ((_scrollViewer.ActualWidth - 10) * Magnification ) / 24; }
+            get { return _scrollViewer == null ? 0 : ((_scrollViewer.ActualWidth - 10) * Slider_Magnification ) / 24; }
         }
 
         /// <summary>
@@ -184,22 +202,22 @@ namespace VideoStateAxis
         /// <summary>
         /// 剪辑开始鼠标按下位置
         /// </summary>
-        private double StartClipOffset = 0;
+        private double ClipStart_MouseDown_Offset = 0;
 
         /// <summary>
-        /// 剪辑左坐标
+        /// 剪辑鼠标按下左坐标
         /// </summary>
-        private double StartPanelOffset = 0;
+        private double Start_MouseDown_ClipOffset = 0;
 
         /// <summary>
-        /// 剪辑滑块宽度
+        /// 鼠标按下剪辑滑块宽度
         /// </summary>
-        private double ClipAreaWidth = 0;
+        private double ClipStart_MouseDown_AreaWidth = 0;
 
         /// <summary>
         /// 时间轴缩放比例
         /// </summary>
-        private double Magnification = 1;
+        private double Slider_Magnification = 1;
 
         /// <summary>
         /// 历史查询时间 - 改变
@@ -213,18 +231,6 @@ namespace VideoStateAxis
             {
                 AxisOb.InitializeAxis();
             }
-        }
-
-        /// <summary>
-        /// 历史查询时间 - 强制转换
-        /// </summary>
-        /// <param name="d"></param>
-        /// <param name="basevalue"></param>
-        /// <returns></returns>
-        private static object CoerceTime(DependencyObject d , object basevalue)
-        {
-            var _eDataTime = (DateTime)basevalue;
-            return _eDataTime;
         }
 
         /// <summary>
@@ -260,14 +266,18 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 历史视频来源 - 强制转换
+        /// 剪辑开启控制源改变事件
         /// </summary>
         /// <param name="d"></param>
-        /// <param name="basevalue"></param>
-        /// <returns></returns>
-        private static object CoerceHistoryVideoSrouces(DependencyObject d ,object basevalue)
+        /// <param name="e"></param>
+        private static void OnClipOffChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
         {
-            return basevalue;
+            VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
+            if(AxisOb != null && e.NewValue != e.OldValue)
+            {
+                AxisOb.ClipOff = (bool)e.NewValue;
+                AxisOb._clipOff.IsChecked = ((bool)e.NewValue) ? true : false;
+            }
         }
 
         /// <summary>
@@ -327,9 +337,9 @@ namespace VideoStateAxis
             if (bor != null)
             {
                 bor.CaptureMouse();
-                StartClipOffset = e.GetPosition(_clipCanvas).X;
-                StartPanelOffset = Canvas.GetLeft(_clipStackPanel);
-                ClipAreaWidth = _clipAreaBorder.ActualWidth;
+                ClipStart_MouseDown_Offset = e.GetPosition(_clipCanvas).X;
+                Start_MouseDown_ClipOffset = _clipStackPanel.Margin.Left;
+                ClipStart_MouseDown_AreaWidth = _clipStackPanel.Margin.Left + _clipStackPanel.ActualWidth;
             }
         }
 
@@ -366,11 +376,17 @@ namespace VideoStateAxis
         /// <param name="pt"></param>
         private void ClipStart(Point pt)
         {
-            double Increment = ClipAreaWidth  - ( Canvas.GetLeft(_clipStackPanel) <= 0 ? 0 : pt.X - StartClipOffset) ;
-            if(Increment >= 0 )
+            if(pt.X >= 0)
             {
-                _clipAreaBorder.Width = pt.X > 0 ? Increment : _clipAreaBorder.Width;
-                MoveClipArea(pt);
+                double clipWidth = ClipStart_MouseDown_AreaWidth - (Start_MouseDown_ClipOffset + (pt.X - ClipStart_MouseDown_Offset) < 0 ? 0 :
+                Start_MouseDown_ClipOffset + (pt.X - ClipStart_MouseDown_Offset) > _clipCanvas.ActualWidth - _clipAreaBorder.Width ?
+                _axisCanvas.ActualWidth - _clipAreaBorder.Width :
+                Start_MouseDown_ClipOffset + (pt.X - ClipStart_MouseDown_Offset)) - 10;
+                _clipAreaBorder.Width = clipWidth <= 0 ? 0 : clipWidth;
+                if(clipWidth >= 0)
+                {
+                    MoveClipArea(pt);
+                }
             }
         }
 
@@ -379,10 +395,10 @@ namespace VideoStateAxis
         /// </summary>
         private void ClipEnd(Point pt)
         {
-            double clipWidth = pt.X - Canvas.GetLeft(_clipStackPanel) ;
+            double clipWidth = pt.X - _clipStackPanel.Margin.Left ;
             _clipAreaBorder.Width = clipWidth <= 0 ? 0 : 
-                clipWidth > _axisCanvas.ActualWidth - Canvas.GetLeft(_clipStackPanel)  ? 
-                _axisCanvas.ActualWidth - Canvas.GetLeft(_clipStackPanel) : clipWidth;
+                clipWidth > _axisCanvas.ActualWidth - _clipStackPanel.Margin.Left  ? 
+                _axisCanvas.ActualWidth - _clipStackPanel.Margin.Left : clipWidth;
         }
 
         /// <summary>
@@ -391,11 +407,11 @@ namespace VideoStateAxis
         /// <param name="pt"></param>
         private void MoveClipArea(Point pt)
         {
-            double clipLeft = StartPanelOffset + (pt.X - StartClipOffset) < 0 ? 0 : 
-                StartPanelOffset + (pt.X - StartClipOffset) > _clipCanvas.ActualWidth - _clipAreaBorder.Width ?
+            double clipLeft = Start_MouseDown_ClipOffset + (pt.X - ClipStart_MouseDown_Offset) < 0 ? 0 : 
+                Start_MouseDown_ClipOffset + (pt.X - ClipStart_MouseDown_Offset) > _clipCanvas.ActualWidth - _clipAreaBorder.Width ?
                 _axisCanvas.ActualWidth - _clipAreaBorder.Width :
-                StartPanelOffset + (pt.X - StartClipOffset);
-            Canvas.SetLeft(_clipStackPanel, clipLeft);
+                Start_MouseDown_ClipOffset + (pt.X - ClipStart_MouseDown_Offset);
+            _clipStackPanel.Margin = new Thickness(clipLeft, 0, 0, 0);
         }
 
         /// <summary>
@@ -405,7 +421,7 @@ namespace VideoStateAxis
         /// <param name="e"></param>
         private void _zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Magnification = Math.Round(e.NewValue , 2);
+            Slider_Magnification = Math.Round(e.NewValue , 2);
             if(!double.IsNaN(Canvas.GetLeft(_timeLine)))
             {
                 RefreshTimeLineLeft(AxisTime);
@@ -454,6 +470,20 @@ namespace VideoStateAxis
             _currentTime.Margin = delta < currentTimeMaxLeft ?
                 new Thickness(delta < 0 ? 10 : delta + 10, 0, 0, 0) :
                 new Thickness(delta > timePointMaxLeft ? timePointMaxLeft - _currentTime.ActualWidth : delta - _currentTime.ActualWidth, 0, 0, 0);
+        }
+
+        /// <summary>
+        /// 剪辑控制开启Checked事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Clip_UnChecked_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox check = sender as CheckBox;
+            if(check != null)
+            {
+                ClipOff = check.IsChecked == null || check.IsChecked == false ? false : true;
+            }
         }
 
         /// <summary>
@@ -514,7 +544,7 @@ namespace VideoStateAxis
         {
             if(_axisCanvasTimeText != null)
             {
-                _axisCanvasTimeText.Width = (_scrollViewer.ActualWidth - 10) * Magnification ;
+                _axisCanvasTimeText.Width = (_scrollViewer.ActualWidth - 10) * Slider_Magnification ;
                 _axisCanvasTimeText.Children.Clear();
                 for (int i = 0; i < 24; i++)
                 {
@@ -573,7 +603,7 @@ namespace VideoStateAxis
         private void DisplayData(Dictionary<KeyValuePair<int, int>,bool> dic)
         {
             DateTime serTime = SerStateTime;
-            Canvas TimeCanvas = new Canvas(){ Width = (_scrollViewer.ActualWidth - 10) * Magnification };
+            Canvas TimeCanvas = new Canvas(){ Width = (_scrollViewer.ActualWidth - 10) * Slider_Magnification };
             foreach (var item in dic)
             {
                 TimeCanvas.Children.Add(new Rectangle()
@@ -626,6 +656,11 @@ namespace VideoStateAxis
             _axisCanvasTimeText = GetTemplateChild(Parid__axisCanvasTimeText) as Canvas;
             _clipCanvas = GetTemplateChild(Parid_clipCanvas) as Canvas;
             _clipStackPanel = GetTemplateChild(Parid_clipStackPanel) as StackPanel;
+            if((_clipOff = GetTemplateChild(Parid_clipOff) as CheckBox) != null)
+            {
+                _clipOff.Checked += new RoutedEventHandler(Clip_UnChecked_Checked);
+                _clipOff.Unchecked += new RoutedEventHandler(Clip_UnChecked_Checked);
+            }
             if ((_zoomSlider = GetTemplateChild(Parid_zoomSlider) as Slider) != null)
             {
                 _zoomSlider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(_zoomSlider_ValueChanged);

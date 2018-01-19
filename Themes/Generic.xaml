@@ -582,7 +582,10 @@
                                         </Grid>
                                         <!--剪辑蒙版-->
                                         <Canvas Grid.Row="3" Margin="6 0 6 0">
-                                            <Rectangle HorizontalAlignment="Left" Fill="Red" Opacity="0.2" Visibility="{Binding IsChecked,ElementName=clipCheck,Converter={StaticResource BoolConveterVisibility}}" Width="{Binding ActualWidth,ElementName=Z_Parid_clipAreaBorder}" Height="{Binding ActualHeight,ElementName=Z_videoHistoryPanel}"></Rectangle>
+                                            <Rectangle HorizontalAlignment="Left" Fill="Red" Opacity="0.2" Margin="{Binding Margin,ElementName=Z_Parid_clipStackPanel}" 
+                                                       Visibility="{Binding IsChecked,ElementName=Z_Parid_clipOff,Converter={StaticResource BoolConveterVisibility}}" 
+                                                       Width="{Binding ActualWidth,ElementName=Z_Parid_clipAreaBorder}" 
+                                                       Height="{Binding ActualHeight,ElementName=Z_videoHistoryPanel}"></Rectangle>
                                         </Canvas>
                                         <!--时间文字-->
                                         <Border Height="16" Panel.ZIndex="4" >
@@ -611,7 +614,7 @@
                                             <Canvas x:Name="Z_Parid_clipCanvas" Background="#22272a" Height="16">
                                                 <StackPanel x:Name="Z_Parid_clipStackPanel" Orientation="Horizontal" Height="14" Canvas.Left="0">
                                                     <Border x:Name="Z_Parid_clipStartBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
-                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="100" Background="#FF777777" Cursor="Hand"></Border>
+                                                    <Border x:Name="Z_Parid_clipAreaBorder" Width="{Binding ActualWidth,ElementName=Z_Parid_axisCanvas}" Background="#FF777777" Cursor="Hand"></Border>
                                                     <Border x:Name="Z_Parid_clipEndBorder" Width="5" Background="#baa623" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
                                                 </StackPanel>
                                                 <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#141414" FontSize="11"  Visibility="Collapsed"/>
@@ -674,7 +677,7 @@
                                                 <Setter Property="Foreground" Value="#D2931A"></Setter>
                                             </Style>
                                         </StackPanel.Resources>
-                                        <CheckBox x:Name="clipCheck" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" VerticalAlignment="Center"></CheckBox>
+                                        <CheckBox x:Name="Z_Parid_clipOff" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" VerticalAlignment="Center"></CheckBox>
                                     </StackPanel>
                                     <!--状态区域，显示指针时间等-->
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
