@@ -457,7 +457,7 @@
                                 <Rectangle  Fill="{TemplateBinding Foreground}" Width="4" Height="4" HorizontalAlignment="Center" VerticalAlignment="Center" ></Rectangle>
                             </Grid>
                         </Grid>
-                        <TextBlock Grid.Column="1" FontSize="12"  Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="3,0,0,0.5"/>
+                        <TextBlock Grid.Column="1" FontSize="12"  Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="3,0,0,0"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -552,8 +552,7 @@
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Border Background="Black" Grid.Row="2">
-                                <!--<ListBox Style="{StaticResource ListBoxSty}"></ListBox>-->
-                                <ScrollBar Template="{StaticResource VerticalScrollBarTemplate}"></ScrollBar>
+                                <ListBox Style="{StaticResource ListBoxSty}"></ListBox>
                             </Border>
                             <!--时间轴 主部分-->
                             <Border CornerRadius="5 5 0 0" BorderBrush="Black"  BorderThickness="1" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" >
@@ -639,7 +638,7 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="260"></ColumnDefinition>
-                                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                                        <ColumnDefinition Width="2*"></ColumnDefinition>
                                         <ColumnDefinition Width="1*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                      <!--时间轴缩放滚动条-->
@@ -675,9 +674,14 @@
                                         <StackPanel.Resources>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Foreground" Value="#D2931A"></Setter>
+                                                <Setter Property="VerticalAlignment" Value="Center"></Setter>
                                             </Style>
                                         </StackPanel.Resources>
-                                        <CheckBox x:Name="Z_Parid_clipOff" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" VerticalAlignment="Center"></CheckBox>
+                                        <CheckBox x:Name="Z_Parid_clipOff" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" ></CheckBox>
+                                        <TextBlock Margin="30 0 0 0" Text="剪辑范围：" ></TextBlock>
+                                        <TextBlock x:Name="Z_Parid_clipStateTimeTextBlock"></TextBlock>
+                                        <TextBlock Text=" - "></TextBlock>
+                                        <TextBlock x:Name="Z_Parid_clipEndTimeTextBlock"></TextBlock>
                                     </StackPanel>
                                     <!--状态区域，显示指针时间等-->
                                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

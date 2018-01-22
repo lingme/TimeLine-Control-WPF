@@ -34,6 +34,8 @@ namespace VideoStateAxis
     [TemplatePart(Name = Parid_clipEndBorder)]
     [TemplatePart(Name = Parid_clipStackPanel)]
     [TemplatePart(Name = Parid_clipOff)]
+    [TemplatePart(Name = Parid_clipStateTimeTextBlock)]
+    [TemplatePart(Name = Parid_clipEndTimeTextBlock)]
 
     public class VideoStateAxisControl : Control
     {
@@ -55,6 +57,9 @@ namespace VideoStateAxis
         private StackPanel _clipStackPanel;              //剪辑滑块容器
         private CheckBox _clipOff;                           //是否开启剪辑控制
 
+        private TextBlock _clipStateTimeTextBlock;     //剪辑开始时间指示器
+        private TextBlock _clipEndTimeTextBlock;      //剪辑结束时间指示器
+
         private const string Parid_axisCanvas = "Z_Parid_axisCanvas";
         private const string Parid__axisCanvasTimeText = "Z_Parid__axisCanvasTimeText";
         private const string Parid_zoomPanel = "Z_Parid_zoomPanel";
@@ -71,6 +76,8 @@ namespace VideoStateAxis
         private const string Parid_clipEndBorder = "Z_Parid_clipEndBorder";
         private const string Parid_clipStackPanel = "Z_Parid_clipStackPanel";
         private const string Parid_clipOff = "Z_Parid_clipOff";
+        private const string Parid_clipStateTimeTextBlock = "Z_Parid_clipStateTimeTextBlock";
+        private const string Parid_clipEndTimeTextBlock = "Z_Parid_clipEndTimeTextBlock";
 
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
@@ -82,13 +89,13 @@ namespace VideoStateAxis
             "SerStateTime", 
             typeof(DateTime), 
             typeof(VideoStateAxisControl), 
-            new PropertyMetadata(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 00:00:00")), OnTimeChanged));
+            new PropertyMetadata(DateTime.Now.Date, OnTimeChanged));
 
         public static readonly DependencyProperty EndTimeProperty = DependencyProperty.Register(
             "SerEndTime", 
             typeof(DateTime), 
             typeof(VideoStateAxisControl), 
-            new PropertyMetadata(DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd 23:59:59")), OnTimeChanged));
+            new PropertyMetadata(DateTime.Now.Date.AddDays(1), OnTimeChanged));
 
         public static readonly DependencyProperty AxisTimeProperty = DependencyProperty.Register(
             "AxisTime",
@@ -99,12 +106,14 @@ namespace VideoStateAxis
         public static readonly DependencyProperty ClipStartTimeProperty = DependencyProperty.Register(
             "ClipStartTime",
             typeof(DateTime),
-            typeof(VideoStateAxisControl));
+            typeof(VideoStateAxisControl),
+            new PropertyMetadata(OnClipTimeChanged));
 
         public static readonly DependencyProperty ClipEndTimeProperty = DependencyProperty.Register(
             "ClipEndTime", 
             typeof(DateTime), 
-            typeof(VideoStateAxisControl));
+            typeof(VideoStateAxisControl),
+            new PropertyMetadata(OnClipTimeChanged));
 
         public static readonly DependencyProperty ClipOffProperty = DependencyProperty.Register(
             "ClipOff", 
@@ -245,7 +254,7 @@ namespace VideoStateAxis
             {
                 AxisOb.HistoryVideoSources.CollectionChanged += (s , o)=> 
                 {
-                    AxisOb.InitializeAxis();
+                    AxisOb.AddHisPie();
                 };
                 AxisOb.InitializeAxis();
             }
@@ -262,6 +271,22 @@ namespace VideoStateAxis
             if (AxisOb != null && e.NewValue != e.OldValue)
             {
                 AxisOb.RefreshTimeLineLeft((DateTime)e.NewValue);
+            }
+        }
+
+        private static void OnClipTimeChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
+        {
+            VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
+            if(AxisOb != null && e.NewValue != e.OldValue)
+            {
+                if (e.Property.Name == nameof(AxisOb.ClipStartTime))
+                {
+                    AxisOb.ClipStartTimeChanged((DateTime)e.NewValue);
+                }
+                if(e.Property.Name == nameof(AxisOb.ClipEndTime))
+                {
+                    AxisOb.ClipEndTimeChanged((DateTime)e.NewValue);
+                }
             }
         }
 
@@ -301,7 +326,7 @@ namespace VideoStateAxis
         /// <param name="dt"></param>
         private void RefreshTimeLineLeft(DateTime dt)
         {
-            TimeSpan ts = dt - DateTime.Parse(SerStateTime.ToString("yyyy-MM-dd 00:00:00"));
+            TimeSpan ts = dt - SerStateTime.Date;
             if (ts.Days <= 1 && ts.Seconds >= 0)
             {
                 Canvas.SetLeft(_timeLine, 
@@ -367,6 +392,7 @@ namespace VideoStateAxis
                         MoveClipArea(e.GetPosition(_clipCanvas));
                         break;
                 }
+                MathClipTime();
             }
         }
 
@@ -422,10 +448,6 @@ namespace VideoStateAxis
         private void _zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider_Magnification = Math.Round(e.NewValue , 2);
-            if(!double.IsNaN(Canvas.GetLeft(_timeLine)))
-            {
-                RefreshTimeLineLeft(AxisTime);
-            }
             InitializeAxis();
         }
 
@@ -466,7 +488,7 @@ namespace VideoStateAxis
         {
             double timePointMaxLeft = _timePanel.ActualWidth - _timePoint.ActualWidth;
             double currentTimeMaxLeft = _timePanel.ActualWidth - _currentTime.ActualWidth;
-            _currentTime.Text = XToDateTime(delta < 0 ? 0 : (delta > timePointMaxLeft ? timePointMaxLeft : delta));
+            _currentTime.Text = (AxisTime = XToDateTime(delta < 0 ? 0 : (delta > timePointMaxLeft ? timePointMaxLeft : delta))).ToString("yyyy-MM-dd HH:mm:ss");
             _currentTime.Margin = delta < currentTimeMaxLeft ?
                 new Thickness(delta < 0 ? 10 : delta + 10, 0, 0, 0) :
                 new Thickness(delta > timePointMaxLeft ? timePointMaxLeft - _currentTime.ActualWidth : delta - _currentTime.ActualWidth, 0, 0, 0);
@@ -506,16 +528,15 @@ namespace VideoStateAxis
         {
             _currentTime.Visibility = Visibility.Collapsed;
             _timePoint.ReleaseMouseCapture();
-            XToDateTime(Canvas.GetLeft(_timeLine));
         }
 
         /// <summary>
         /// 计算指针拖动的显示时间
         /// </summary>
         /// <param name="x">指针在Canvas容器中的Left坐标值</param>
-        private string XToDateTime(double point_x)
+        private DateTime XToDateTime(double point_x)
         {
-            DateTime dt = DateTime.Parse(SerStateTime.ToString("yyyy-MM-dd 00:00:00"));
+            DateTime dt = SerStateTime.Date;
             double time;
             int H , M , S;
             time = point_x  / Dial_Cell_H  ;
@@ -523,7 +544,7 @@ namespace VideoStateAxis
             time = (time - H) * 60;
             M = (int)(time);
             S = (int)((time - M) * 60);
-            return ((AxisTime = dt.AddHours(H).AddMinutes(M).AddSeconds(S))).ToString("yyyy-MM-dd HH:mm:ss");
+            return dt.AddHours(H).AddMinutes(M).AddSeconds(S);
         }
 
         /// <summary>
@@ -534,10 +555,60 @@ namespace VideoStateAxis
             AddTimeTextBlock();
             AddTimeLine();
             AddHisPie();
+            InitializationNewtTimeLine();
+            ClipStartTimeChanged(ClipStartTime);
+            ClipEndTimeChanged(ClipEndTime);
         }
 
         /// <summary>
-        /// 添加时间刻度文字
+        /// 计算剪辑时间
+        /// </summary>
+        private void MathClipTime()
+        {
+            ClipStartTime = XToDateTime(_clipStackPanel.Margin.Left);
+            ClipEndTime = XToDateTime(_clipStackPanel.Margin.Left + _clipAreaBorder.ActualWidth);
+        }
+
+        /// <summary>
+        /// 重新计算剪辑时间为准的剪辑条左坐标
+        /// </summary>
+        private void ClipStartTimeChanged(DateTime dt)
+        {
+            TimeSpan ts = dt - SerStateTime.Date;
+            if (ts.Days <= 1 && ts.Seconds >= 0 && _clipStackPanel != null)
+            {
+                double left = Dial_Cell_H * (ts.Days == 1 ? 23 : dt.Hour) + Dial_Cell_M * (ts.Days == 1 ? 59 : dt.Minute) + Dial_Cell_S * (ts.Days == 1 ? 59 : dt.Second);
+                _clipStackPanel.Margin = new Thickness(left, 0 , 0 , 0);
+            }
+        }
+
+        /// <summary>
+        /// 重新计算剪辑时间为准的剪辑条宽度
+        /// </summary>
+        /// <param name="dt"></param>
+        private void ClipEndTimeChanged(DateTime dt)
+        {
+            TimeSpan ts = dt - ClipStartTime;
+            if (ts.Days <= 1 && ts.Seconds >= 0 && _clipAreaBorder != null)
+            {
+                double width = Dial_Cell_H * (ts.Days == 1 ? 23 : ts.Hours) + Dial_Cell_M * (ts.Days == 1 ? 59 : ts.Minutes) + Dial_Cell_S * (ts.Days == 1 ? 59 : ts.Seconds);
+                _clipAreaBorder.Width = width;
+            }
+        }
+
+        /// <summary>
+        /// 初始化指针位置
+        /// </summary>
+        private void InitializationNewtTimeLine()
+        {
+            if (!double.IsNaN(Canvas.GetLeft(_timeLine)))
+            {
+                RefreshTimeLineLeft(AxisTime);
+            }
+        }
+
+        /// <summary>
+        /// 初始化时间刻度文字
         /// </summary>
         /// <param name="HaveMathTextBlock">需要填充的时间文字数量</param>
         private void AddTimeTextBlock()
@@ -559,7 +630,7 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 添加时间刻度
+        /// 初始化时间刻度
         /// </summary>
         /// <param name="HaveMathTextBlock">需要填充的时间刻度数量</param>
         private void AddTimeLine()
@@ -582,7 +653,7 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 填充时间轴
+        /// 初始化时间轴
         /// </summary>
         private void AddHisPie()
         {
@@ -696,6 +767,16 @@ namespace VideoStateAxis
                 _clipStartBorder.MouseLeftButtonDown += new MouseButtonEventHandler(Clip_MouseLeftButtonDown);
                 _clipStartBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
                 _clipStartBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
+            }
+            if((_clipStateTimeTextBlock = GetTemplateChild(Parid_clipStateTimeTextBlock) as TextBlock) != null)
+            {
+                Binding binding = new Binding("ClipStartTime") { Source = this ,StringFormat="yyyy-MM-dd HH:mm:ss"};
+                _clipStateTimeTextBlock.SetBinding(TextBlock.TextProperty, binding);
+            }
+            if((_clipEndTimeTextBlock = GetTemplateChild(Parid_clipEndTimeTextBlock) as TextBlock) != null)
+            {
+                Binding binding = new Binding("ClipEndTime") { Source = this , StringFormat = "yyyy-MM-dd HH:mm:ss"};
+                _clipEndTimeTextBlock.SetBinding(TextBlock.TextProperty, binding);
             }
         }
     }
