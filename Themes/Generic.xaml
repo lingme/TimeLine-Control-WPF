@@ -558,7 +558,57 @@
         </Setter>
     </Style>
 
+    <ControlTemplate x:Key="scroll_background" TargetType="{x:Type RepeatButton}">
+        <Border Background="Transparent">
+        </Border>
+    </ControlTemplate>
 
+    <Style x:Key="scroll_thumb_style" TargetType="{x:Type Thumb}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="IsTabStop" Value="false"/>
+        <Setter Property="Focusable" Value="false"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border x:Name="border" CornerRadius="3" Background="#A5A5A5" BorderBrush="#666666" BorderThickness="1" >
+                       
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter Property="Background" TargetName="border" Value="#7F7F7F"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ScrollBar_style" TargetType="{x:Type ScrollBar}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                    <Grid Width="8">
+                        <Border Width="6" HorizontalAlignment="Center" CornerRadius="5" Background="Transparent">
+                        </Border>
+                        <Track HorizontalAlignment="Center" Name="PART_Track" Width="{TemplateBinding Width}" Maximum="{TemplateBinding Maximum}" Minimum="{TemplateBinding Minimum}"
+                                    Value="{TemplateBinding Value}"  IsDirectionReversed="true">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Template="{StaticResource scroll_background}" Command="ScrollBar.LineUpCommand"  />
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource scroll_thumb_style}" >
+                                </Thumb>
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Template="{StaticResource scroll_background}" Command="ScrollBar.LineDownCommand" />
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <local:BoolConveterVisibility x:Key="BoolConveterVisibility"></local:BoolConveterVisibility>
     
@@ -594,11 +644,9 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="200"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="70"></ColumnDefinition>
+                                <ColumnDefinition Width="20"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <!--<Border Background="#2b3034" BorderBrush="Black" Grid.Row="1" BorderThickness="1 1 0 0">
-                                <TextBlock Text="{Binding Text,ElementName=Z_Parid_currentTime}" VerticalAlignment="Center" FontSize="15" HorizontalAlignment="Center" Foreground="#D2931A"></TextBlock>
-                            </Border>-->
+                            <ScrollBar x:Name="Z_Parid_carmeraBar" Grid.Column="2" Grid.RowSpan="4" Style="{StaticResource ScrollBar_style}" Orientation="Vertical"></ScrollBar>
                             <Border Background="Black" Grid.Row="2">
                                 <ListBox x:Name="Z_Parid_cameraListBox" Style="{StaticResource ListBoxSty}" ScrollViewer.CanContentScroll="True"></ListBox>
                             </Border>

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -37,6 +38,7 @@ namespace VideoStateAxis
     [TemplatePart(Name = Parid_clipStateTimeTextBlock)]
     [TemplatePart(Name = Parid_clipEndTimeTextBlock)]
     [TemplatePart(Name = Parid_cameraListBox)]
+    [TemplatePart(Name = Parid_carmeraBar)]
 
     public class VideoStateAxisControl : Control
     {
@@ -64,6 +66,8 @@ namespace VideoStateAxis
         private ListBox _cameraListBox;                    //相机列表
         private ScrollViewer _cameraScrollViewer;     //相机列表ScrollViewer
 
+        private ScrollBar _carmeraBar;                     //相机列表ScrollBar
+
         private const string Parid_axisCanvas = "Z_Parid_axisCanvas";
         private const string Parid__axisCanvasTimeText = "Z_Parid__axisCanvasTimeText";
         private const string Parid_zoomPanel = "Z_Parid_zoomPanel";
@@ -83,6 +87,7 @@ namespace VideoStateAxis
         private const string Parid_clipStateTimeTextBlock = "Z_Parid_clipStateTimeTextBlock";
         private const string Parid_clipEndTimeTextBlock = "Z_Parid_clipEndTimeTextBlock";
         private const string Parid_cameraListBox = "Z_Parid_cameraListBox";
+        private const string Parid_carmeraBar = "Z_Parid_carmeraBar";
 
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
@@ -260,6 +265,7 @@ namespace VideoStateAxis
                 AxisOb.HistoryVideoSources.CollectionChanged += (s , o)=> 
                 {
                     AxisOb.AddHisPie();
+                    AxisOb.InitiaListBox_ScrollChanged();
                 };
                 AxisOb.InitializeAxis();
             }
@@ -484,6 +490,7 @@ namespace VideoStateAxis
             if(_scrollViewer != null)
             {
                 _scrollViewer.ScrollToVerticalOffset(_cameraScrollViewer.VerticalOffset);
+     
             }
         }
 
@@ -596,6 +603,7 @@ namespace VideoStateAxis
                 if (_cameraScrollViewer != null)
                 {
                     _cameraScrollViewer.ScrollChanged += _cameraScrollViewer_ScrollChanged;
+                    _carmeraBar.ViewportSize = _cameraScrollViewer.ViewportHeight;
                 }
             }
         }
@@ -823,6 +831,15 @@ namespace VideoStateAxis
                 Binding binding = new Binding("HistoryVideoSources") { Source = this };
                 _cameraListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
             }
+            if((_carmeraBar = GetTemplateChild(Parid_carmeraBar) as ScrollBar) !=null)
+            {
+                _carmeraBar.Scroll += _carmeraBar_Scroll;
+            }
+        }
+
+        private void _carmeraBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            
         }
     }
 
