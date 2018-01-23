@@ -486,10 +486,15 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Height="21">
-                        <CheckBox  Style="{StaticResource checkStyle}" IsChecked="{Binding Path=CameraChecked}"/>
-                        <TextBlock Text="{Binding Path=CameraName}"/>
+                    <StackPanel Orientation="Horizontal" Height="16" Margin="0 3 5 1" HorizontalAlignment="Left">
+                        <CheckBox IsChecked="{Binding CameraChecked}" Style="{StaticResource checkSty}" Foreground="#c8c7c3" Margin="0 -2 0 0"></CheckBox>
+                        <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" Width="155" HorizontalContentAlignment="Right" x:Name="Tzz" Text="{Binding Path=CameraName}" Foreground="#c8c7c3" />
                     </StackPanel>
+                    <DataTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" TargetName="Tzz" Value="#D2931A"></Setter>
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -497,7 +502,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
@@ -505,15 +510,55 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBox}">
-                    <Border Background="#2b3034" BorderBrush="Black" BorderThickness="1 1 0 1">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerTemplate}">
+                    <Border Background="#2b3034" BorderBrush="Black" BorderThickness="0 1 0 0">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerTemplate}" Margin="0 -8 0 0" CanContentScroll="True">
                             <ItemsPresenter/>
                         </ScrollViewer>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="TextElement.Foreground" Value="Red"/>
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="TextElement.Foreground" TargetName="Bd" Value="Red"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
     </Style>
+
+
 
     <local:BoolConveterVisibility x:Key="BoolConveterVisibility"></local:BoolConveterVisibility>
     
@@ -537,26 +582,29 @@
                             </Setter>
                         </Style>
                     </ControlTemplate.Resources>
-                    <Border Background="#2b3034" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Border Background="#2b3034" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10" BorderBrush="Black" BorderThickness="1">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="15"></RowDefinition>
+                                <RowDefinition Height="0"></RowDefinition>
                                 <RowDefinition Height="45"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="25"></RowDefinition>
-                                <RowDefinition Height="15"></RowDefinition>
+                                <RowDefinition Height="0"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="200"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
+                            <!--<Border Background="#2b3034" BorderBrush="Black" Grid.Row="1" BorderThickness="1 1 0 0">
+                                <TextBlock Text="{Binding Text,ElementName=Z_Parid_currentTime}" VerticalAlignment="Center" FontSize="15" HorizontalAlignment="Center" Foreground="#D2931A"></TextBlock>
+                            </Border>-->
                             <Border Background="Black" Grid.Row="2">
-                                <ListBox Style="{StaticResource ListBoxSty}"></ListBox>
+                                <ListBox x:Name="Z_Parid_cameraListBox" Style="{StaticResource ListBoxSty}" ScrollViewer.CanContentScroll="True"></ListBox>
                             </Border>
                             <!--时间轴 主部分-->
-                            <Border CornerRadius="5 5 0 0" BorderBrush="Black"  BorderThickness="1" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" >
-                                <ScrollViewer  x:Name="Z_Parid_scrollViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Template="{StaticResource ScrollViewerTemplate}" >
+                            <Border CornerRadius="5 5 0 0" BorderBrush="Black"  BorderThickness="1 0 1 0" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" >
+                                <ScrollViewer CanContentScroll="True" x:Name="Z_Parid_scrollViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Template="{StaticResource ScrollViewerTemplate}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="16"></RowDefinition>
@@ -573,8 +621,8 @@
                                                     </Style>
                                                     <Style TargetType="{x:Type Canvas}">
                                                         <Setter Property="Background" Value="#353b40"></Setter>
-                                                        <Setter Property="Height" Value="15"></Setter>
-                                                        <Setter Property="Margin" Value="0 3 0 3"></Setter>
+                                                        <Setter Property="Height" Value="16"></Setter>
+                                                        <Setter Property="Margin" Value="0 4 0 4"></Setter>
                                                     </Style>
                                                 </StackPanel.Resources>
                                             </StackPanel>
@@ -634,43 +682,45 @@
                                 </ScrollViewer>
                             </Border>
                             <!--状态栏：缩放滚动条，当前时间等-->
-                            <Border BorderBrush="Black" BorderThickness="1 0 1 1" Grid.Row="3" Grid.Column="1" Background="#22272a">
+                            <Border BorderBrush="Black" BorderThickness="0 1 1 0" Grid.Row="3" Grid.Column="0" Background="#22272a" Grid.ColumnSpan="2">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="260"></ColumnDefinition>
+                                        <ColumnDefinition Width="200"></ColumnDefinition>
+                                        <ColumnDefinition Width="270"></ColumnDefinition>
                                         <ColumnDefinition Width="2*"></ColumnDefinition>
-                                        <ColumnDefinition Width="1*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                      <!--时间轴缩放滚动条-->
-                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="5 0 0 0" VerticalAlignment="Center">
-                                        <Viewbox Width="12" Height="12" HorizontalAlignment="Left">
-                                            <Path Data="{StaticResource imgData}" Fill="#D2931A"></Path>
-                                        </Viewbox>
-                                        <Slider x:Name="Z_Parid_zoomSlider" Width="96" Margin="10 0 10 0" Minimum="1" Maximum="3">
-                                            <Slider.Style>
-                                                <Style TargetType="{x:Type Slider}">
-                                                    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-                                                    <Setter Property="Background" Value="Transparent"/>
-                                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                                    <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}"/>
-                                                    <Setter Property="Template" Value="{StaticResource SliderHorizontal}"/>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="Orientation" Value="Vertical">
-                                                            <Setter Property="Template" Value="{StaticResource SliderVertical}"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Slider.Style>
-                                        </Slider>
-                                        <Viewbox Width="17" Height="17" HorizontalAlignment="Right" Margin="0 0 0 2">
-                                            <Path Data="{StaticResource imgData}" Fill="#D2931A" ></Path>
-                                        </Viewbox>
-                                        <TextBlock Text="时间轴缩放：" Foreground="#D2931A" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
-                                        <TextBlock Text="{Binding Value,ElementName=Z_Parid_zoomSlider,StringFormat={}{0:F1}}" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
-                                        <TextBlock Text=" x" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
-                                    </StackPanel>
+                                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1 0 1 0">
+                                        <StackPanel  Orientation="Horizontal" Margin="5 0 0 0" VerticalAlignment="Center">
+                                            <Viewbox Width="12" Height="12" HorizontalAlignment="Left">
+                                                <Path Data="{StaticResource imgData}" Fill="#D2931A"></Path>
+                                            </Viewbox>
+                                            <Slider x:Name="Z_Parid_zoomSlider" Width="96" Margin="10 0 10 0" Minimum="1" Maximum="3">
+                                                <Slider.Style>
+                                                    <Style TargetType="{x:Type Slider}">
+                                                        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}"/>
+                                                        <Setter Property="Template" Value="{StaticResource SliderHorizontal}"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="Orientation" Value="Vertical">
+                                                                <Setter Property="Template" Value="{StaticResource SliderVertical}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Slider.Style>
+                                            </Slider>
+                                            <Viewbox Width="17" Height="17" HorizontalAlignment="Right" Margin="0 0 0 2">
+                                                <Path Data="{StaticResource imgData}" Fill="#D2931A" ></Path>
+                                            </Viewbox>
+                                            <TextBlock Text="时间轴缩放：" Foreground="#D2931A" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
+                                            <TextBlock Text="{Binding Value,ElementName=Z_Parid_zoomSlider,StringFormat={}{0:F1}}" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
+                                            <TextBlock Text=" x" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
+                                        </StackPanel>
+                                    </Border>
                                     <!--剪辑控制开启，剪辑控制时间范围-->
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel.Resources>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Foreground" Value="#D2931A"></Setter>
@@ -678,19 +728,11 @@
                                             </Style>
                                         </StackPanel.Resources>
                                         <CheckBox x:Name="Z_Parid_clipOff" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" ></CheckBox>
-                                        <TextBlock Margin="30 0 0 0" Text="剪辑范围：" ></TextBlock>
+                                        <TextBlock Margin="40 0 0 0" Text="剪辑范围：" ></TextBlock>
                                         <TextBlock x:Name="Z_Parid_clipStateTimeTextBlock"></TextBlock>
                                         <TextBlock Text=" - "></TextBlock>
                                         <TextBlock x:Name="Z_Parid_clipEndTimeTextBlock"></TextBlock>
-                                    </StackPanel>
-                                    <!--状态区域，显示指针时间等-->
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Foreground" Value="#D2931A"></Setter>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <TextBlock Text="指针时间："></TextBlock>
+                                        <TextBlock Margin="40 0 0 0" Text="指针时间："></TextBlock>
                                         <TextBlock Text="{Binding Text,ElementName=Z_Parid_currentTime}"></TextBlock>
                                     </StackPanel>
                                 </Grid>

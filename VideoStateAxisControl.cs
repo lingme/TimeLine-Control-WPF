@@ -36,6 +36,7 @@ namespace VideoStateAxis
     [TemplatePart(Name = Parid_clipOff)]
     [TemplatePart(Name = Parid_clipStateTimeTextBlock)]
     [TemplatePart(Name = Parid_clipEndTimeTextBlock)]
+    [TemplatePart(Name = Parid_cameraListBox)]
 
     public class VideoStateAxisControl : Control
     {
@@ -60,6 +61,9 @@ namespace VideoStateAxis
         private TextBlock _clipStateTimeTextBlock;     //剪辑开始时间指示器
         private TextBlock _clipEndTimeTextBlock;      //剪辑结束时间指示器
 
+        private ListBox _cameraListBox;                    //相机列表
+        private ScrollViewer _cameraScrollViewer;     //相机列表ScrollViewer
+
         private const string Parid_axisCanvas = "Z_Parid_axisCanvas";
         private const string Parid__axisCanvasTimeText = "Z_Parid__axisCanvasTimeText";
         private const string Parid_zoomPanel = "Z_Parid_zoomPanel";
@@ -78,6 +82,7 @@ namespace VideoStateAxis
         private const string Parid_clipOff = "Z_Parid_clipOff";
         private const string Parid_clipStateTimeTextBlock = "Z_Parid_clipStateTimeTextBlock";
         private const string Parid_clipEndTimeTextBlock = "Z_Parid_clipEndTimeTextBlock";
+        private const string Parid_cameraListBox = "Z_Parid_cameraListBox";
 
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
@@ -462,6 +467,24 @@ namespace VideoStateAxis
             _axisCanvasTimeText.Margin = new Thickness(0, _scrollViewer.VerticalOffset, 0, 0);
             _axisCanvas.Margin = new Thickness(0, _scrollViewer.VerticalOffset, 0, 0);
             _clipCanvas.Margin = new Thickness(0, _scrollViewer.VerticalOffset, 0, 0);
+
+            if(_cameraScrollViewer != null)
+            {
+                _cameraScrollViewer.ScrollToVerticalOffset(_scrollViewer.VerticalOffset);
+            }
+        }
+
+        /// <summary>
+        /// 相机列表ListBox的ScrollerViewerChanged事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _cameraScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if(_scrollViewer != null)
+            {
+                _scrollViewer.ScrollToVerticalOffset(_cameraScrollViewer.VerticalOffset);
+            }
         }
 
         /// <summary>
@@ -558,6 +581,23 @@ namespace VideoStateAxis
             InitializationNewtTimeLine();
             ClipStartTimeChanged(ClipStartTime);
             ClipEndTimeChanged(ClipEndTime);
+            InitiaListBox_ScrollChanged();
+        }
+
+        /// <summary>
+        /// 初始化相机列表ListBox的ScrollerViewerChanged事件
+        /// </summary>
+        private void InitiaListBox_ScrollChanged()
+        {
+            Decorator border = VisualTreeHelper.GetChild(_cameraListBox, 0) as Decorator;
+            if (border != null)
+            {
+                _cameraScrollViewer = border.Child as ScrollViewer;
+                if (_cameraScrollViewer != null)
+                {
+                    _cameraScrollViewer.ScrollChanged += _cameraScrollViewer_ScrollChanged;
+                }
+            }
         }
 
         /// <summary>
@@ -680,7 +720,7 @@ namespace VideoStateAxis
                 TimeCanvas.Children.Add(new Rectangle()
                 {
                     Width = item.Key.Value * Dial_Cell_M,
-                    Height = item.Value ? 15 : 0,
+                    Height = item.Value ? 16 : 0,
                     Margin = new Thickness(serTime.Hour * Dial_Cell_H + serTime.Minute * Dial_Cell_M + serTime.Second * Dial_Cell_S, 0, 0, 0)
                 });
                 serTime = serTime.AddMinutes(item.Key.Value);
@@ -727,7 +767,7 @@ namespace VideoStateAxis
             _axisCanvasTimeText = GetTemplateChild(Parid__axisCanvasTimeText) as Canvas;
             _clipCanvas = GetTemplateChild(Parid_clipCanvas) as Canvas;
             _clipStackPanel = GetTemplateChild(Parid_clipStackPanel) as StackPanel;
-            if((_clipOff = GetTemplateChild(Parid_clipOff) as CheckBox) != null)
+            if ((_clipOff = GetTemplateChild(Parid_clipOff) as CheckBox) != null)
             {
                 _clipOff.Checked += new RoutedEventHandler(Clip_UnChecked_Checked);
                 _clipOff.Unchecked += new RoutedEventHandler(Clip_UnChecked_Checked);
@@ -768,15 +808,20 @@ namespace VideoStateAxis
                 _clipStartBorder.MouseMove += new MouseEventHandler(Clip_MouseMove);
                 _clipStartBorder.MouseLeftButtonUp += new MouseButtonEventHandler(Clip_MouseLeftButtonUp);
             }
-            if((_clipStateTimeTextBlock = GetTemplateChild(Parid_clipStateTimeTextBlock) as TextBlock) != null)
+            if ((_clipStateTimeTextBlock = GetTemplateChild(Parid_clipStateTimeTextBlock) as TextBlock) != null)
             {
-                Binding binding = new Binding("ClipStartTime") { Source = this ,StringFormat="yyyy-MM-dd HH:mm:ss"};
+                Binding binding = new Binding("ClipStartTime") { Source = this, StringFormat = " yyyy-MM-dd HH:mm:ss " };
                 _clipStateTimeTextBlock.SetBinding(TextBlock.TextProperty, binding);
             }
-            if((_clipEndTimeTextBlock = GetTemplateChild(Parid_clipEndTimeTextBlock) as TextBlock) != null)
+            if ((_clipEndTimeTextBlock = GetTemplateChild(Parid_clipEndTimeTextBlock) as TextBlock) != null)
             {
-                Binding binding = new Binding("ClipEndTime") { Source = this , StringFormat = "yyyy-MM-dd HH:mm:ss"};
+                Binding binding = new Binding("ClipEndTime") { Source = this, StringFormat = " yyyy-MM-dd HH:mm:ss " };
                 _clipEndTimeTextBlock.SetBinding(TextBlock.TextProperty, binding);
+            }
+            if ((_cameraListBox = GetTemplateChild(Parid_cameraListBox) as ListBox) != null)
+            {
+                Binding binding = new Binding("HistoryVideoSources") { Source = this };
+                _cameraListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
             }
         }
     }
