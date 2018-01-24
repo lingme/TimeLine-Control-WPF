@@ -400,6 +400,9 @@
     </Style>
 
     <Geometry x:Key="imgData">M955.346899 811.30069 742.294548 406.649604c-11.56643-22.054295-30.487362-22.054295-42.052768 0l-96.1652 182.621271c-11.628852 22.113647-30.487362 22.113647-42.116213 0L394.764414 271.622304c-11.57257-22.110577-30.364565-22.110577-42.059931 0L68.677661 811.30069c-11.622712 22.053272 1.689479 40.008202 29.765931 40.008202l367.720989 0 233.713926 0 225.703485 0C953.655374 851.307869 966.912305 833.352939 955.346899 811.30069M591.184969 320.909847c46.027289 0 83.208097-33.1981 83.208097-74.108858s-37.180807-74.108858-83.208097-74.108858c-45.911656 0-83.148745 33.1981-83.148745 74.108858S545.273313 320.909847 591.184969 320.909847</Geometry>
+    <Geometry x:Key="imgdown">M954.123536 509.086647 526.172791 932.999426c-8.074909 8.074909-20.185738 8.074909-28.260647 0L69.960375 509.086647c-12.110829-14.130835-4.427846-34.317597 14.130835-34.317597l215.994356 0L300.085566 107.149369c0-12.111852 10.093892-22.205745 22.204721-22.205745l379.50436 0c12.110829 0 22.204721 10.093892 22.204721 24.223704l0 365.601722 215.994356 0C958.159456 474.770074 966.234365 496.975818 954.123536 509.086647z</Geometry>
+    <Geometry x:Key="imgFavorite">M1024 378.88l-314.647273-37.236364L512 0 314.647273 341.643636 0 378.88l236.450909 266.24L191.767273 1024 512 872.261818 832.232727 1024l-44.683636-378.88L1024 378.88z</Geometry>
+    <Geometry x:Key="imgOpen">M512 68.191078c-245.204631 0-443.808922 198.60429-443.808922 443.808922s198.60429 443.808922 443.808922 443.808922 443.808922-198.60429 443.808922-443.808922S757.203608 68.191078 512 68.191078zM423.23842 711.713554 423.23842 312.285422l266.284739 199.713554L423.23842 711.713554z</Geometry>
 
     <!--  垂直滚动条上按钮  -->
     <Style x:Key="ScrollBarUpTrackButton" TargetType="{x:Type RepeatButton}">
@@ -817,6 +820,7 @@
                             HorizontalContentAlignment="Right"
                             Background="Transparent"
                             BorderThickness="0"
+                            Cursor="Arrow"
                             Foreground="#c8c7c3"
                             IsReadOnly="True"
                             Text="{Binding Path=CameraName}" />
@@ -910,22 +914,47 @@
 
     <!--  时间轴项 - 下载 - 数据模板  -->
     <Style x:Key="ListBoxStyDown" TargetType="{x:Type ListBox}">
-        <Setter Property="ItemTemplate">
+        <!--<Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
                     <StackPanel
                         Height="16"
                         Margin="0,3,5,1"
                         Orientation="Horizontal">
-                        <CheckBox
-                            Margin="0,-2,0,0"
-                            Foreground="#c8c7c3"
-                            IsChecked="{Binding CameraChecked}"
-                            Style="{StaticResource checkSty}" />
+                        <Viewbox
+                            Width="14"
+                            Height="14"
+                            Margin="0,0,0,2">
+                            <Path
+                                Cursor="Hand"
+                                Data="{StaticResource imgdown}"
+                                Fill="#c8c7c3"
+                                ToolTip="下载" />
+                        </Viewbox>
+                        <Viewbox
+                            Width="14"
+                            Height="14"
+                            Margin="10,0,0,2">
+                            <Path
+                                Cursor="Hand"
+                                Data="{StaticResource imgFavorite}"
+                                Fill="#c8c7c3"
+                                ToolTip="搜藏" />
+                        </Viewbox>
+                        <Viewbox
+                            Width="14"
+                            Height="14"
+                            Margin="10,0,0,2">
+                            <Path
+                                Cursor="Hand"
+                                Data="{StaticResource imgOpen}"
+                                Fill="#c8c7c3"
+                                ToolTip="打开视频" />
+                        </Viewbox>
                     </StackPanel>
                 </DataTemplate>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
         <!--  纵向排列  -->
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -941,7 +970,7 @@
                     <Border
                         Background="#2b3034"
                         BorderBrush="Black"
-                        BorderThickness="0,1,0,0">
+                        BorderThickness="0,0,0,0">
                         <ScrollViewer
                             Margin="0,-8,0,0"
                             CanContentScroll="True"
@@ -1027,7 +1056,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="200" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="90" />
                             </Grid.ColumnDefinitions>
                             <Border Grid.Row="2" Grid.Column="2">
                                 <ListBox

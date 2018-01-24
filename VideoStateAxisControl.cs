@@ -615,10 +615,20 @@ namespace VideoStateAxis
             AddTimeTextBlock();
             AddTimeLine();
             AddHisPie();
+            InitiaClipTime();
             InitializationNewtTimeLine();
             ClipStartTimeChanged(ClipStartTime);
             ClipEndTimeChanged(ClipEndTime);
             InitiaListBox_ScrollChanged();
+        }
+
+        /// <summary>
+        /// 初始化剪辑时间
+        /// </summary>
+        private void InitiaClipTime()
+        {
+            ClipStartTime = ClipStartTime == DateTime.Parse("0001/1/1 0:00:00") ? SerStateTime.Date : ClipStartTime;
+            ClipEndTime = ClipEndTime == DateTime.Parse("0001/1/1 0:00:00") ? SerStateTime.Date.AddDays(1) : ClipEndTime;
         }
 
         /// <summary>
@@ -872,9 +882,41 @@ namespace VideoStateAxis
             }
             if((_downButtonListBox = GetTemplateChild(Parid_downButtonListBox) as ListBox) != null)
             {
-                Binding binding = new Binding("HistoryVideoSources") { Source = this };
-                _downButtonListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
+                Down_ListBox_Template();
             }
+        }
+
+        /// <summary>
+        /// 初始化数据模板
+        /// </summary>
+        private void Down_ListBox_Template()
+        {
+            Binding binding = new Binding("HistoryVideoSources") { Source = this };
+            _downButtonListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
+
+            DataTemplate dataTemplate = new DataTemplate();
+            FrameworkElementFactory frameworkElementFactory = new FrameworkElementFactory(typeof(StackPanel));
+            frameworkElementFactory.SetValue(StackPanel.HeightProperty, 16);
+            frameworkElementFactory.SetValue(StackPanel.MarginProperty, new Thickness(0, 3, 5, 1));
+            frameworkElementFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+
+
+            FrameworkElementFactory pathDown = new FrameworkElementFactory(typeof(Path));
+            pathDown.SetValue(Path.CursorProperty, CursorType.Hand);
+            pathDown.SetValue(Path.DataProperty, Geometry.Parse("M954.123536 509.086647 526.172791 932.999426c-8.074909 8.074909-20.185738 8.074909-28.260647 0L69.960375 509.086647c-12.110829-14.130835-4.427846-34.317597 14.130835-34.317597l215.994356 0L300.085566 107.149369c0-12.111852 10.093892-22.205745 22.204721-22.205745l379.50436 0c12.110829 0 22.204721 10.093892 22.204721 24.223704l0 365.601722 215.994356 0C958.159456 474.770074 966.234365 496.975818 954.123536 509.086647z"));
+            pathDown.SetValue(Path.FillProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#c8c7c3")));
+            pathDown.SetValue(Path.ToolTipProperty, "下载");
+
+            FrameworkElementFactory viewBox_Down = new FrameworkElementFactory(typeof(Viewbox));
+            viewBox_Down.SetValue(Viewbox.HeightProperty, 14);
+            viewBox_Down.SetValue(Viewbox.WidthProperty, 14);
+            viewBox_Down.SetValue(Viewbox.MarginProperty, new Thickness(0, 0, 0, 2));
+
+            viewBox_Down.AppendChild(pathDown);
+            frameworkElementFactory.AppendChild(viewBox_Down);
+            dataTemplate.VisualTree = frameworkElementFactory;
+
+            _downButtonListBox.ItemTemplate = dataTemplate;
         }
     }
 
