@@ -3,273 +3,425 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:VideoStateAxis">
 
-    <SolidColorBrush x:Key="SliderThumb.Static.Foreground" Color="#FFE5E5E5"/>
-    <SolidColorBrush x:Key="SliderThumb.MouseOver.Background" Color="#FFDCECFC"/>
-    <SolidColorBrush x:Key="SliderThumb.MouseOver.Border" Color="#FF7Eb4EA"/>
-    <SolidColorBrush x:Key="SliderThumb.Pressed.Background" Color="#FFDAECFC"/>
-    <SolidColorBrush x:Key="SliderThumb.Pressed.Border" Color="#FF569DE5"/>
-    <SolidColorBrush x:Key="SliderThumb.Disabled.Background" Color="#FFF0F0F0"/>
-    <SolidColorBrush x:Key="SliderThumb.Disabled.Border" Color="#FFD9D9D9"/>
-    <SolidColorBrush x:Key="SliderThumb.Static.Background" Color="#FFF0F0F0"/>
-    <SolidColorBrush x:Key="SliderThumb.Static.Border" Color="#FFACACAC"/>
-    <!--sider顶部滑块样式-->
+    <SolidColorBrush x:Key="SliderThumb.Static.Foreground" Color="#FFE5E5E5" />
+    <SolidColorBrush x:Key="SliderThumb.MouseOver.Background" Color="#FFDCECFC" />
+    <SolidColorBrush x:Key="SliderThumb.MouseOver.Border" Color="#FF7Eb4EA" />
+    <SolidColorBrush x:Key="SliderThumb.Pressed.Background" Color="#FFDAECFC" />
+    <SolidColorBrush x:Key="SliderThumb.Pressed.Border" Color="#FF569DE5" />
+    <SolidColorBrush x:Key="SliderThumb.Disabled.Background" Color="#FFF0F0F0" />
+    <SolidColorBrush x:Key="SliderThumb.Disabled.Border" Color="#FFD9D9D9" />
+    <SolidColorBrush x:Key="SliderThumb.Static.Background" Color="#FFF0F0F0" />
+    <SolidColorBrush x:Key="SliderThumb.Static.Border" Color="#FFACACAC" />
+    <!--  sider顶部滑块样式  -->
     <ControlTemplate x:Key="SliderThumbHorizontalTop" TargetType="{x:Type Thumb}">
-        <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Path x:Name="grip" Data="M 0,6 C0,6 5.5,0 5.5,0 5.5,0 11,6 11,6 11,6 11,18 11,18 11,18 0,18 0,18 0,18 0,6 0,6 z" Fill="{StaticResource SliderThumb.Static.Background}" Stretch="Fill" SnapsToDevicePixels="True" Stroke="{StaticResource SliderThumb.Static.Border}" StrokeThickness="1" UseLayoutRounding="True" VerticalAlignment="Center"/>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            UseLayoutRounding="True">
+            <Path
+                x:Name="grip"
+                VerticalAlignment="Center"
+                Data="M 0,6 C0,6 5.5,0 5.5,0 5.5,0 11,6 11,6 11,6 11,18 11,18 11,18 0,18 0,18 0,18 0,6 0,6 z"
+                Fill="{StaticResource SliderThumb.Static.Background}"
+                SnapsToDevicePixels="True"
+                Stretch="Fill"
+                Stroke="{StaticResource SliderThumb.Static.Border}"
+                StrokeThickness="1"
+                UseLayoutRounding="True" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.MouseOver.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.MouseOver.Border}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Pressed.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Pressed.Border}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Disabled.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Disabled.Border}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <!--sider底部滑块样式-->
+    <!--  sider底部滑块样式  -->
     <ControlTemplate x:Key="SliderThumbHorizontalBottom" TargetType="{x:Type Thumb}">
-        <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Path x:Name="grip" Data="M 0,12 C0,12 5.5,18 5.5,18 5.5,18 11,12 11,12 11,12 11,0 11,0 11,0 0,0 0,0 0,0 0,12 0,12 z" Fill="{StaticResource SliderThumb.Static.Background}" Stretch="Fill" SnapsToDevicePixels="True" Stroke="{StaticResource SliderThumb.Static.Border}" StrokeThickness="1" UseLayoutRounding="True" VerticalAlignment="Center"/>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            UseLayoutRounding="True">
+            <Path
+                x:Name="grip"
+                VerticalAlignment="Center"
+                Data="M 0,12 C0,12 5.5,18 5.5,18 5.5,18 11,12 11,12 11,12 11,0 11,0 11,0 0,0 0,0 0,0 0,12 0,12 z"
+                Fill="{StaticResource SliderThumb.Static.Background}"
+                SnapsToDevicePixels="True"
+                Stretch="Fill"
+                Stroke="{StaticResource SliderThumb.Static.Border}"
+                StrokeThickness="1"
+                UseLayoutRounding="True" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.MouseOver.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.MouseOver.Border}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Pressed.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Pressed.Border}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Disabled.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Disabled.Border}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <SolidColorBrush x:Key="SliderThumb.Track.Border" Color="#FFD6D6D6"/>
-    <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="#FFE7EAEA"/>
+    <SolidColorBrush x:Key="SliderThumb.Track.Border" Color="#FFD6D6D6" />
+    <SolidColorBrush x:Key="SliderThumb.Track.Background" Color="#FFE7EAEA" />
     <Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
-        <Setter Property="OverridesDefaultStyle" Value="true"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Focusable" Value="false"/>
-        <Setter Property="IsTabStop" Value="false"/>
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="IsTabStop" Value="false" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
-                    <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"/>
+                    <Rectangle
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Fill="{TemplateBinding Background}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    <!--Sider中间滑块样式-->
+    <!--  Sider中间滑块样式  -->
     <ControlTemplate x:Key="SliderThumbHorizontalDefault" TargetType="{x:Type Thumb}">
-        <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Grid Width="12" Height="15" Background="Transparent"  Cursor="Hand" Canvas.Top="0">
-                <Polygon StrokeThickness="0" Fill="#D2931A" Points="1,1 1,10 6,15 11,10 11,1" />
-                <Rectangle Width="6" Height="1" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-6,0,0"/>
-                <Rectangle Width="6" Height="1" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            UseLayoutRounding="True">
+            <Grid
+                Canvas.Top="0"
+                Width="12"
+                Height="15"
+                Background="Transparent"
+                Cursor="Hand">
+                <Polygon
+                    Fill="#D2931A"
+                    Points="1,1 1,10 6,15 11,10 11,1"
+                    StrokeThickness="0" />
+                <Rectangle
+                    Width="6"
+                    Height="1"
+                    Margin="0,-6,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Fill="Black" />
+                <Rectangle
+                    Width="6"
+                    Height="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Fill="Black" />
             </Grid>
         </Grid>
     </ControlTemplate>
-    <!--Sider主样式-->
+    <!--  Sider主样式  -->
     <ControlTemplate x:Key="SliderHorizontal" TargetType="{x:Type Slider}">
-        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+        <Border
+            x:Name="border"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            SnapsToDevicePixels="True">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TickBar x:Name="TopTick" Fill="{TemplateBinding Foreground}" Height="4" Margin="0,0,0,2" Placement="Top" Grid.Row="0" Visibility="Collapsed"/>
-                <TickBar x:Name="BottomTick" Fill="{TemplateBinding Foreground}" Height="4" Margin="0,2,0,0" Placement="Bottom" Grid.Row="2" Visibility="Collapsed"/>
-                <Border x:Name="TrackBackground" BorderBrush="#D2931A" BorderThickness="1" Background="{StaticResource SliderThumb.Track.Background}" Height="1.0" Margin="5,0" Grid.Row="1" VerticalAlignment="center">
+                <TickBar
+                    x:Name="TopTick"
+                    Grid.Row="0"
+                    Height="4"
+                    Margin="0,0,0,2"
+                    Fill="{TemplateBinding Foreground}"
+                    Placement="Top"
+                    Visibility="Collapsed" />
+                <TickBar
+                    x:Name="BottomTick"
+                    Grid.Row="2"
+                    Height="4"
+                    Margin="0,2,0,0"
+                    Fill="{TemplateBinding Foreground}"
+                    Placement="Bottom"
+                    Visibility="Collapsed" />
+                <Border
+                    x:Name="TrackBackground"
+                    Grid.Row="1"
+                    Height="1.0"
+                    Margin="5,0"
+                    VerticalAlignment="center"
+                    Background="{StaticResource SliderThumb.Track.Background}"
+                    BorderBrush="#D2931A"
+                    BorderThickness="1">
                     <Canvas Margin="-6,-1">
-                        <Rectangle x:Name="PART_SelectionRange" Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Height="1.0" Visibility="Hidden"/>
+                        <Rectangle
+                            x:Name="PART_SelectionRange"
+                            Height="1.0"
+                            Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                            Visibility="Hidden" />
                     </Canvas>
                 </Border>
                 <Track x:Name="PART_Track" Grid.Row="1">
                     <Track.DecreaseRepeatButton>
-                        <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource RepeatButtonTransparent}"/>
+                        <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource RepeatButtonTransparent}" />
                     </Track.DecreaseRepeatButton>
                     <Track.IncreaseRepeatButton>
-                        <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource RepeatButtonTransparent}"/>
+                        <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource RepeatButtonTransparent}" />
                     </Track.IncreaseRepeatButton>
                     <Track.Thumb>
-                        <Thumb x:Name="Thumb" Focusable="False" Height="18" OverridesDefaultStyle="True" Template="{StaticResource SliderThumbHorizontalDefault}" VerticalAlignment="Center" Width="11"/>
+                        <Thumb
+                            x:Name="Thumb"
+                            Width="11"
+                            Height="18"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            OverridesDefaultStyle="True"
+                            Template="{StaticResource SliderThumbHorizontalDefault}" />
                     </Track.Thumb>
                 </Track>
             </Grid>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="TickPlacement" Value="TopLeft">
-                <Setter Property="Visibility" TargetName="TopTick" Value="Visible"/>
-                <Setter Property="Template" TargetName="Thumb" Value="{StaticResource SliderThumbHorizontalTop}"/>
-                <Setter Property="Margin" TargetName="TrackBackground" Value="5,2,5,0"/>
+                <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
+                <Setter TargetName="Thumb" Property="Template" Value="{StaticResource SliderThumbHorizontalTop}" />
+                <Setter TargetName="TrackBackground" Property="Margin" Value="5,2,5,0" />
             </Trigger>
             <Trigger Property="TickPlacement" Value="BottomRight">
-                <Setter Property="Visibility" TargetName="BottomTick" Value="Visible"/>
-                <Setter Property="Template" TargetName="Thumb" Value="{StaticResource SliderThumbHorizontalBottom}"/>
-                <Setter Property="Margin" TargetName="TrackBackground" Value="5,0,5,2"/>
+                <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
+                <Setter TargetName="Thumb" Property="Template" Value="{StaticResource SliderThumbHorizontalBottom}" />
+                <Setter TargetName="TrackBackground" Property="Margin" Value="5,0,5,2" />
             </Trigger>
             <Trigger Property="TickPlacement" Value="Both">
-                <Setter Property="Visibility" TargetName="TopTick" Value="Visible"/>
-                <Setter Property="Visibility" TargetName="BottomTick" Value="Visible"/>
+                <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
+                <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsSelectionRangeEnabled" Value="true">
-                <Setter Property="Visibility" TargetName="PART_SelectionRange" Value="Visible"/>
+                <Setter TargetName="PART_SelectionRange" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="true">
-                <Setter Property="Foreground" TargetName="Thumb" Value="Blue"/>
+                <Setter TargetName="Thumb" Property="Foreground" Value="Blue" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <ControlTemplate x:Key="SliderThumbVerticalLeft" TargetType="{x:Type Thumb}">
-        <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Path x:Name="grip" Data="M 6,11 C6,11 0,5.5 0,5.5 0,5.5 6,0 6,0 6,0 18,0 18,0 18,0 18,11 18,11 18,11 6,11 6,11 z" Fill="{StaticResource SliderThumb.Static.Background}" Stretch="Fill" Stroke="{StaticResource SliderThumb.Static.Border}"/>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            UseLayoutRounding="True">
+            <Path
+                x:Name="grip"
+                Data="M 6,11 C6,11 0,5.5 0,5.5 0,5.5 6,0 6,0 6,0 18,0 18,0 18,0 18,11 18,11 18,11 6,11 6,11 z"
+                Fill="{StaticResource SliderThumb.Static.Background}"
+                Stretch="Fill"
+                Stroke="{StaticResource SliderThumb.Static.Border}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.MouseOver.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.MouseOver.Border}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Pressed.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Pressed.Border}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Disabled.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Disabled.Border}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <ControlTemplate x:Key="SliderThumbVerticalRight" TargetType="{x:Type Thumb}">
-        <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Path x:Name="grip" Data="M 12,11 C12,11 18,5.5 18,5.5 18,5.5 12,0 12,0 12,0 0,0 0,0 0,0 0,11 0,11 0,11 12,11 12,11 z" Fill="{StaticResource SliderThumb.Static.Background}" Stretch="Fill" Stroke="{StaticResource SliderThumb.Static.Border}"/>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            UseLayoutRounding="True">
+            <Path
+                x:Name="grip"
+                Data="M 12,11 C12,11 18,5.5 18,5.5 18,5.5 12,0 12,0 12,0 0,0 0,0 0,0 0,11 0,11 0,11 12,11 12,11 z"
+                Fill="{StaticResource SliderThumb.Static.Background}"
+                Stretch="Fill"
+                Stroke="{StaticResource SliderThumb.Static.Border}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.MouseOver.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.MouseOver.Border}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Pressed.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Pressed.Border}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Disabled.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Disabled.Border}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <ControlTemplate x:Key="SliderThumbVerticalDefault" TargetType="{x:Type Thumb}">
-        <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
-            <Path x:Name="grip" Data="M0.5,0.5 L18.5,0.5 18.5,11.5 0.5,11.5z" Fill="{StaticResource SliderThumb.Static.Background}" Stretch="Fill" Stroke="{StaticResource SliderThumb.Static.Border}"/>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            UseLayoutRounding="True">
+            <Path
+                x:Name="grip"
+                Data="M0.5,0.5 L18.5,0.5 18.5,11.5 0.5,11.5z"
+                Fill="{StaticResource SliderThumb.Static.Background}"
+                Stretch="Fill"
+                Stroke="{StaticResource SliderThumb.Static.Border}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.MouseOver.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.MouseOver.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.MouseOver.Border}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="true">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Pressed.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Pressed.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Pressed.Border}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Fill" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Background}"/>
-                <Setter Property="Stroke" TargetName="grip" Value="{StaticResource SliderThumb.Disabled.Border}"/>
+                <Setter TargetName="grip" Property="Fill" Value="{StaticResource SliderThumb.Disabled.Background}" />
+                <Setter TargetName="grip" Property="Stroke" Value="{StaticResource SliderThumb.Disabled.Border}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <ControlTemplate x:Key="SliderVertical" TargetType="{x:Type Slider}">
-        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+        <Border
+            x:Name="border"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            SnapsToDevicePixels="True">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition MinWidth="{TemplateBinding MinWidth}" Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="{TemplateBinding MinWidth}" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TickBar x:Name="TopTick" Grid.Column="0" Fill="{TemplateBinding Foreground}" Margin="0,0,2,0" Placement="Left" Visibility="Collapsed" Width="4"/>
-                <TickBar x:Name="BottomTick" Grid.Column="2" Fill="{TemplateBinding Foreground}" Margin="2,0,0,0" Placement="Right" Visibility="Collapsed" Width="4"/>
-                <Border x:Name="TrackBackground" BorderBrush="{StaticResource SliderThumb.Track.Border}" BorderThickness="1" Background="{StaticResource SliderThumb.Track.Background}" Grid.Column="1" HorizontalAlignment="center" Margin="0,5" Width="4.0">
+                <TickBar
+                    x:Name="TopTick"
+                    Grid.Column="0"
+                    Width="4"
+                    Margin="0,0,2,0"
+                    Fill="{TemplateBinding Foreground}"
+                    Placement="Left"
+                    Visibility="Collapsed" />
+                <TickBar
+                    x:Name="BottomTick"
+                    Grid.Column="2"
+                    Width="4"
+                    Margin="2,0,0,0"
+                    Fill="{TemplateBinding Foreground}"
+                    Placement="Right"
+                    Visibility="Collapsed" />
+                <Border
+                    x:Name="TrackBackground"
+                    Grid.Column="1"
+                    Width="4.0"
+                    Margin="0,5"
+                    HorizontalAlignment="center"
+                    Background="{StaticResource SliderThumb.Track.Background}"
+                    BorderBrush="{StaticResource SliderThumb.Track.Border}"
+                    BorderThickness="1">
                     <Canvas Margin="-1,-6">
-                        <Rectangle x:Name="PART_SelectionRange" Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Visibility="Hidden" Width="4.0"/>
+                        <Rectangle
+                            x:Name="PART_SelectionRange"
+                            Width="4.0"
+                            Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                            Visibility="Hidden" />
                     </Canvas>
                 </Border>
                 <Track x:Name="PART_Track" Grid.Column="1">
                     <Track.DecreaseRepeatButton>
-                        <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource RepeatButtonTransparent}"/>
+                        <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource RepeatButtonTransparent}" />
                     </Track.DecreaseRepeatButton>
                     <Track.IncreaseRepeatButton>
-                        <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource RepeatButtonTransparent}"/>
+                        <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Style="{StaticResource RepeatButtonTransparent}" />
                     </Track.IncreaseRepeatButton>
                     <Track.Thumb>
-                        <Thumb x:Name="Thumb" Focusable="False" Height="11" OverridesDefaultStyle="True" Template="{StaticResource SliderThumbVerticalDefault}" VerticalAlignment="Top" Width="18"/>
+                        <Thumb
+                            x:Name="Thumb"
+                            Width="18"
+                            Height="11"
+                            VerticalAlignment="Top"
+                            Focusable="False"
+                            OverridesDefaultStyle="True"
+                            Template="{StaticResource SliderThumbVerticalDefault}" />
                     </Track.Thumb>
                 </Track>
             </Grid>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="TickPlacement" Value="TopLeft">
-                <Setter Property="Visibility" TargetName="TopTick" Value="Visible"/>
-                <Setter Property="Template" TargetName="Thumb" Value="{StaticResource SliderThumbVerticalLeft}"/>
-                <Setter Property="Margin" TargetName="TrackBackground" Value="2,5,0,5"/>
+                <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
+                <Setter TargetName="Thumb" Property="Template" Value="{StaticResource SliderThumbVerticalLeft}" />
+                <Setter TargetName="TrackBackground" Property="Margin" Value="2,5,0,5" />
             </Trigger>
             <Trigger Property="TickPlacement" Value="BottomRight">
-                <Setter Property="Visibility" TargetName="BottomTick" Value="Visible"/>
-                <Setter Property="Template" TargetName="Thumb" Value="{StaticResource SliderThumbVerticalRight}"/>
-                <Setter Property="Margin" TargetName="TrackBackground" Value="0,5,2,5"/>
+                <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
+                <Setter TargetName="Thumb" Property="Template" Value="{StaticResource SliderThumbVerticalRight}" />
+                <Setter TargetName="TrackBackground" Property="Margin" Value="0,5,2,5" />
             </Trigger>
             <Trigger Property="TickPlacement" Value="Both">
-                <Setter Property="Visibility" TargetName="TopTick" Value="Visible"/>
-                <Setter Property="Visibility" TargetName="BottomTick" Value="Visible"/>
+                <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
+                <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsSelectionRangeEnabled" Value="true">
-                <Setter Property="Visibility" TargetName="PART_SelectionRange" Value="Visible"/>
+                <Setter TargetName="PART_SelectionRange" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="true">
-                <Setter Property="Foreground" TargetName="Thumb" Value="Blue"/>
+                <Setter TargetName="Thumb" Property="Foreground" Value="Blue" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <Style TargetType="{x:Type Slider}">
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}"/>
-        <Setter Property="Template" Value="{StaticResource SliderHorizontal}"/>
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}" />
+        <Setter Property="Template" Value="{StaticResource SliderHorizontal}" />
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="Template" Value="{StaticResource SliderVertical}"/>
+                <Setter Property="Template" Value="{StaticResource SliderVertical}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Geometry x:Key="imgData">M955.346899 811.30069 742.294548 406.649604c-11.56643-22.054295-30.487362-22.054295-42.052768 0l-96.1652 182.621271c-11.628852 22.113647-30.487362 22.113647-42.116213 0L394.764414 271.622304c-11.57257-22.110577-30.364565-22.110577-42.059931 0L68.677661 811.30069c-11.622712 22.053272 1.689479 40.008202 29.765931 40.008202l367.720989 0 233.713926 0 225.703485 0C953.655374 851.307869 966.912305 833.352939 955.346899 811.30069M591.184969 320.909847c46.027289 0 83.208097-33.1981 83.208097-74.108858s-37.180807-74.108858-83.208097-74.108858c-45.911656 0-83.148745 33.1981-83.148745 74.108858S545.273313 320.909847 591.184969 320.909847</Geometry>
 
-     <!--垂直滚动条上按钮-->
+    <!--  垂直滚动条上按钮  -->
     <Style x:Key="ScrollBarUpTrackButton" TargetType="{x:Type RepeatButton}">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Background" Value="#FF424242"/>
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Background" Value="#FF424242" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
                     <Border Background="Transparent">
-                        <Path Data="M0,5 h10 l-5,-5 Z" Fill="#6ec7b3FF" Opacity="0"/>
+                        <Path
+                            Data="M0,5 h10 l-5,-5 Z"
+                            Fill="#6ec7b3FF"
+                            Opacity="0" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#FF585858"/>
+                            <Setter Property="Background" Value="#FF585858" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#FF747474"/>
+                            <Setter Property="Background" Value="#FF747474" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -277,24 +429,27 @@
         </Setter>
     </Style>
 
-    <!--垂直滚动条下按钮-->
+    <!--  垂直滚动条下按钮  -->
     <Style x:Key="ScrollBarDownTrackButton" TargetType="{x:Type RepeatButton}">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Background" Value="#FF424242"/>
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Background" Value="#FF424242" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
                     <Border Background="Transparent">
-                        <Path Data="M0,0 h12 l-6,6 Z" Fill="#6ec7b3FF" Opacity="0"/>
+                        <Path
+                            Data="M0,0 h12 l-6,6 Z"
+                            Fill="#6ec7b3FF"
+                            Opacity="0" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#FF585858"/>
+                            <Setter Property="Background" Value="#FF585858" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#FF747474"/>
+                            <Setter Property="Background" Value="#FF747474" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -302,33 +457,63 @@
         </Setter>
     </Style>
 
-    <!--水平滚动条左右按钮空白模板，去除默认样式-->
+    <!--  水平滚动条左右按钮空白模板，去除默认样式  -->
     <Style x:Key="ScrollBarTrackButton" TargetType="{x:Type RepeatButton}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type RepeatButton}"/>
+                <ControlTemplate TargetType="{x:Type RepeatButton}" />
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!-- 水平滚滚动条模板 -->
+    <!--  水平滚滚动条模板  -->
     <ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
         <Grid SnapsToDevicePixels="true">
-            <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}">
+            <Track
+                x:Name="PART_Track"
+                IsDirectionReversed="False"
+                IsEnabled="{TemplateBinding IsMouseOver}">
                 <Track.DecreaseRepeatButton>
-                    <RepeatButton Style="{StaticResource ScrollBarTrackButton}"/>
+                    <RepeatButton Style="{StaticResource ScrollBarTrackButton}" />
                 </Track.DecreaseRepeatButton>
                 <Track.Thumb>
                     <Thumb MinWidth="8">
                         <Thumb.Template>
                             <ControlTemplate TargetType="{x:Type Thumb}">
                                 <Grid>
-                                    <Border Margin="6,0,6,0" Height="8" Background="#FF777777"/>
-                                    <Border Width="6" Height="8" Background="#baa623" HorizontalAlignment="Left" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0">
-                                        <Rectangle Width="1" Height="4" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <Border
+                                        Height="8"
+                                        Margin="6,0,6,0"
+                                        Background="#FF777777" />
+                                    <Border
+                                        Width="6"
+                                        Height="8"
+                                        HorizontalAlignment="Left"
+                                        Background="#baa623"
+                                        BorderBrush="Black"
+                                        BorderThickness="0,0,1,0"
+                                        CornerRadius="2,0,0,2">
+                                        <Rectangle
+                                            Width="1"
+                                            Height="4"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Fill="Black" />
                                     </Border>
-                                    <Border Width="6" Height="8" Background="#baa623" HorizontalAlignment="Right" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0">
-                                        <Rectangle Width="1" Height="4" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <Border
+                                        Width="6"
+                                        Height="8"
+                                        HorizontalAlignment="Right"
+                                        Background="#baa623"
+                                        BorderBrush="Black"
+                                        BorderThickness="1,0,0,0"
+                                        CornerRadius="0,2,2,0">
+                                        <Rectangle
+                                            Width="1"
+                                            Height="4"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Fill="Black" />
                                     </Border>
                                 </Grid>
                             </ControlTemplate>
@@ -336,136 +521,178 @@
                     </Thumb>
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
-                    <RepeatButton Style="{StaticResource ScrollBarTrackButton}"/>
+                    <RepeatButton Style="{StaticResource ScrollBarTrackButton}" />
                 </Track.IncreaseRepeatButton>
             </Track>
         </Grid>
     </ControlTemplate>
 
-    <!-- 水平滚滚动条样式 -->
+    <!--  水平滚滚动条样式  -->
     <Style x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Height" Value="8"/>
-        <Setter Property="MinHeight" Value="8"/>
-        <Setter Property="Template" Value="{StaticResource HorizontalScrollBarTemplate}"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Height" Value="8" />
+        <Setter Property="MinHeight" Value="8" />
+        <Setter Property="Template" Value="{StaticResource HorizontalScrollBarTemplate}" />
     </Style>
 
-    <!--滚动条滑块样式-->
+    <!--  滚动条滑块样式  -->
     <ControlTemplate x:Key="ThumbTemplate" TargetType="{x:Type Thumb}">
-        <Border x:Name="Bg" CornerRadius="3" Margin="2" SnapsToDevicePixels="True" Background="#FF777777"/>
+        <Border
+            x:Name="Bg"
+            Margin="2"
+            Background="#FF777777"
+            CornerRadius="3"
+            SnapsToDevicePixels="True" />
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Opacity" Value="0.5" TargetName="Bg"></Setter>
+                <Setter TargetName="Bg" Property="Opacity" Value="0.5" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Opacity" Value="0.8" TargetName="Bg"></Setter>
+                <Setter TargetName="Bg" Property="Opacity" Value="0.8" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!--水平滚动条左右滑块空白处空模板，去除默认样式-->
+    <!--  水平滚动条左右滑块空白处空模板，去除默认样式  -->
     <Style x:Key="ScrollBarTemplateTrackButton" TargetType="{x:Type RepeatButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
-                    <Rectangle Fill="Transparent"/>
+                    <Rectangle Fill="Transparent" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!-- 垂直滚滚动条模板 -->
+    <!--  垂直滚滚动条模板  -->
     <ControlTemplate x:Key="VerticalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
         <Grid x:Name="Bg" SnapsToDevicePixels="true">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <!-- 上按钮 -->
-            <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarUpTrackButton}"/>
-            <!-- 中间滑动区域 -->
-            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
-                <!--上滑块-->
+            <!--  上按钮  -->
+            <RepeatButton
+                Command="{x:Static ScrollBar.LineUpCommand}"
+                IsEnabled="{TemplateBinding IsMouseOver}"
+                Style="{StaticResource ScrollBarUpTrackButton}" />
+            <!--  中间滑动区域  -->
+            <Track
+                x:Name="PART_Track"
+                Grid.Row="1"
+                IsDirectionReversed="true"
+                IsEnabled="{TemplateBinding IsMouseOver}">
+                <!--  上滑块  -->
                 <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarTemplateTrackButton}"/>
+                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarTemplateTrackButton}" />
                 </Track.DecreaseRepeatButton>
-                <!--中间滑块-->
+                <!--  中间滑块  -->
                 <Track.Thumb>
-                    <Thumb Template="{StaticResource ThumbTemplate}" MinHeight="10"/>
+                    <Thumb MinHeight="10" Template="{StaticResource ThumbTemplate}" />
                 </Track.Thumb>
-                <!--下滑块-->
+                <!--  下滑块  -->
                 <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarTemplateTrackButton}"/>
+                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarTemplateTrackButton}" />
                 </Track.IncreaseRepeatButton>
             </Track>
-            <!-- 下按钮 -->
-            <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarDownTrackButton}"/>
+            <!--  下按钮  -->
+            <RepeatButton
+                Grid.Row="2"
+                Command="{x:Static ScrollBar.LineDownCommand}"
+                IsEnabled="{TemplateBinding IsMouseOver}"
+                Style="{StaticResource ScrollBarDownTrackButton}" />
         </Grid>
     </ControlTemplate>
 
-    <!--增加缩小时间轴单位样式-->
+    <!--  增加缩小时间轴单位样式  -->
     <Style x:Key="ButtonSyt" TargetType="{x:Type TextBlock}">
-        <Setter Property="Width" Value="20"></Setter>
-        <Setter Property="Height" Value="20"></Setter>
-        <Setter Property="Background" Value="#FF424853"></Setter>
-        <Setter Property="Cursor" Value="Hand"></Setter>
-        <Setter Property="Foreground" Value="#F5F5F5"></Setter>
-        <Setter Property="FontSize" Value="20"></Setter>
-        <Setter Property="FontWeight" Value="Bold"></Setter>
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Background" Value="#FF424853" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="#F5F5F5" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
-    <!-- 垂直相机滚滚动条样式 -->
+    <!--  垂直相机滚滚动条样式  -->
     <Style x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Width" Value="0"/>
-        <Setter Property="MinWidth" Value="0"/>
-        <Setter Property="Template" Value="{StaticResource VerticalScrollBarTemplate}"/>
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Width" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Template" Value="{StaticResource VerticalScrollBarTemplate}" />
     </Style>
 
-    <!-- 垂直下载滚滚动条样式 -->
+    <!--  垂直下载滚滚动条样式  -->
     <Style x:Key="VerticalScrollBarDwon" TargetType="{x:Type ScrollBar}">
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Width" Value="10"/>
-        <Setter Property="MinWidth" Value="10"/>
-        <Setter Property="Template" Value="{StaticResource VerticalScrollBarTemplate}"/>
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Width" Value="10" />
+        <Setter Property="MinWidth" Value="10" />
+        <Setter Property="Template" Value="{StaticResource VerticalScrollBarTemplate}" />
     </Style>
 
-    <!--checkBox 样式-->
+    <!--  checkBox 样式  -->
     <Style x:Key="checkSty" TargetType="{x:Type CheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="False" />
         <Setter Property="FocusVisualStyle" Value="{DynamicResource CheckBoxFocusVisual}" />
-        <Setter Property="Height" Value="20"/>
-        <Setter Property="IsChecked" Value="False"/>
-        <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="Height" Value="20" />
+        <Setter Property="IsChecked" Value="False" />
+        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid Height="{TemplateBinding Height}" Width="{TemplateBinding Height}">
-                            <Rectangle Fill="Black" Opacity="0.1" Stroke="#6ec7b3" StrokeThickness="1" Width="12" Height="12"></Rectangle>
-                            <Rectangle x:Name="CheckBoxRectangleOut" Stroke="{TemplateBinding Foreground}" StrokeThickness="1" Width="12" Height="12" ></Rectangle>
-                            <Grid x:Name="CheckedMark" Width="20" Height="20" Visibility="Collapsed" >
-                                <Rectangle  Fill="{TemplateBinding Foreground}" Width="4" Height="4" HorizontalAlignment="Center" VerticalAlignment="Center" ></Rectangle>
+                        <Grid Width="{TemplateBinding Height}" Height="{TemplateBinding Height}">
+                            <Rectangle
+                                Width="12"
+                                Height="12"
+                                Fill="Black"
+                                Opacity="0.1"
+                                Stroke="#6ec7b3"
+                                StrokeThickness="1" />
+                            <Rectangle
+                                x:Name="CheckBoxRectangleOut"
+                                Width="12"
+                                Height="12"
+                                Stroke="{TemplateBinding Foreground}"
+                                StrokeThickness="1" />
+                            <Grid
+                                x:Name="CheckedMark"
+                                Width="20"
+                                Height="20"
+                                Visibility="Collapsed">
+                                <Rectangle
+                                    Width="4"
+                                    Height="4"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Fill="{TemplateBinding Foreground}" />
                             </Grid>
                         </Grid>
-                        <TextBlock Grid.Column="1" FontSize="12"  Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="3,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="{TemplateBinding Foreground}"
+                            Text="{TemplateBinding Content}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="CheckedMark" Property="Visibility" Value="Visible"></Setter>
+                            <Setter TargetName="CheckedMark" Property="Visibility" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -473,72 +700,160 @@
         </Setter>
     </Style>
 
-    <!--ScrollViewer模板设备列表-->
+    <!--  ScrollViewer模板设备列表  -->
     <ControlTemplate x:Key="ScrollViewerTemplate" TargetType="{x:Type ScrollViewer}">
         <Grid x:Name="Grid" Background="{TemplateBinding Background}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <ScrollBar x:Name="PART_HorizontalScrollBar" Visibility="Visible" Grid.Row="0" Grid.Column="0" AutomationProperties.AutomationId="HorizontalScrollBar"  Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Style="{StaticResource HorizontalScrollBar}"/>
-            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Grid.Row="1" Grid.Column="0" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}"/>
-            <ScrollBar x:Name="PART_VerticalScrollBar" Visibility="Visible" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0"  Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource VerticalScrollBar}"/>
+            <ScrollBar
+                x:Name="PART_HorizontalScrollBar"
+                Grid.Row="0"
+                Grid.Column="0"
+                AutomationProperties.AutomationId="HorizontalScrollBar"
+                Maximum="{TemplateBinding ScrollableWidth}"
+                Minimum="0"
+                Orientation="Horizontal"
+                Style="{StaticResource HorizontalScrollBar}"
+                ViewportSize="{TemplateBinding ViewportWidth}"
+                Visibility="Visible"
+                Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+            <ScrollContentPresenter
+                x:Name="PART_ScrollContentPresenter"
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="{TemplateBinding Padding}"
+                CanContentScroll="{TemplateBinding CanContentScroll}"
+                CanHorizontallyScroll="False"
+                CanVerticallyScroll="False"
+                Content="{TemplateBinding Content}"
+                ContentTemplate="{TemplateBinding ContentTemplate}" />
+            <ScrollBar
+                x:Name="PART_VerticalScrollBar"
+                Grid.Row="1"
+                Grid.Column="1"
+                AutomationProperties.AutomationId="VerticalScrollBar"
+                Cursor="Arrow"
+                Maximum="{TemplateBinding ScrollableHeight}"
+                Minimum="0"
+                Style="{StaticResource VerticalScrollBar}"
+                ViewportSize="{TemplateBinding ViewportHeight}"
+                Visibility="Visible"
+                Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
         </Grid>
     </ControlTemplate>
 
-    <!--ScrollViewer模板下载收藏列表-->
+    <!--  ScrollViewer模板下载收藏列表  -->
     <ControlTemplate x:Key="ScrollViewerTemplateDown" TargetType="{x:Type ScrollViewer}">
         <Grid x:Name="Grid" Background="{TemplateBinding Background}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <ScrollBar x:Name="PART_HorizontalScrollBar" Visibility="Visible" Grid.Row="0" Grid.Column="0" AutomationProperties.AutomationId="HorizontalScrollBar"  Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Style="{StaticResource HorizontalScrollBar}"/>
-            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Grid.Row="1" Grid.Column="0" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}"/>
-            <ScrollBar x:Name="PART_VerticalScrollBar" Visibility="Visible" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0"  Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource VerticalScrollBarDwon}"/>
+            <ScrollBar
+                x:Name="PART_HorizontalScrollBar"
+                Grid.Row="0"
+                Grid.Column="0"
+                AutomationProperties.AutomationId="HorizontalScrollBar"
+                Maximum="{TemplateBinding ScrollableWidth}"
+                Minimum="0"
+                Orientation="Horizontal"
+                Style="{StaticResource HorizontalScrollBar}"
+                ViewportSize="{TemplateBinding ViewportWidth}"
+                Visibility="Visible"
+                Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+            <ScrollContentPresenter
+                x:Name="PART_ScrollContentPresenter"
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="{TemplateBinding Padding}"
+                CanContentScroll="{TemplateBinding CanContentScroll}"
+                CanHorizontallyScroll="False"
+                CanVerticallyScroll="False"
+                Content="{TemplateBinding Content}"
+                ContentTemplate="{TemplateBinding ContentTemplate}" />
+            <ScrollBar
+                x:Name="PART_VerticalScrollBar"
+                Grid.Row="1"
+                Grid.Column="1"
+                AutomationProperties.AutomationId="VerticalScrollBar"
+                Cursor="Arrow"
+                Maximum="{TemplateBinding ScrollableHeight}"
+                Minimum="0"
+                Style="{StaticResource VerticalScrollBarDwon}"
+                ViewportSize="{TemplateBinding ViewportHeight}"
+                Visibility="Visible"
+                Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
         </Grid>
     </ControlTemplate>
 
-    <!--ListBox相机列表容器外观+数据模板-->
+    <!--  ListBox相机列表容器外观+数据模板  -->
     <Style x:Key="ListBoxStyCarmera" TargetType="{x:Type ListBox}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Height="16" Margin="0 3 5 1" HorizontalAlignment="Left">
-                        <CheckBox IsChecked="{Binding CameraChecked}" Style="{StaticResource checkSty}" Foreground="#c8c7c3" Margin="0 -2 0 0"></CheckBox>
-                        <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" Width="155" HorizontalContentAlignment="Right" x:Name="Tzz" Text="{Binding Path=CameraName}" Foreground="#c8c7c3" />
+                    <StackPanel
+                        Height="16"
+                        Margin="0,3,5,1"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                        <CheckBox
+                            Margin="0,-2,0,0"
+                            Foreground="#c8c7c3"
+                            IsChecked="{Binding CameraChecked}"
+                            Style="{StaticResource checkSty}" />
+                        <TextBox
+                            x:Name="Tzz"
+                            Width="155"
+                            HorizontalContentAlignment="Right"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="#c8c7c3"
+                            IsReadOnly="True"
+                            Text="{Binding Path=CameraName}" />
                     </StackPanel>
                     <DataTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" TargetName="Tzz" Value="#D2931A"></Setter>
+                            <Setter TargetName="Tzz" Property="Foreground" Value="#D2931A" />
                         </Trigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
-        <!-- 纵向排列 -->
+        <!--  纵向排列  -->
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Orientation="Vertical" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
-        <!-- 相机名称Listbox容器外观-->
+        <!--  相机名称Listbox容器外观  -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBox}">
-                    <Border Background="#2b3034" BorderBrush="Black" BorderThickness="0 1 0 0">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerTemplate}" Margin="0 -8 0 0" CanContentScroll="True">
-                            <ItemsPresenter/>
+                    <Border
+                        Background="#2b3034"
+                        BorderBrush="Black"
+                        BorderThickness="0,1,0,0">
+                        <ScrollViewer
+                            Margin="0,-8,0,0"
+                            CanContentScroll="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            Template="{StaticResource ScrollViewerTemplate}">
+                            <ItemsPresenter />
                         </ScrollViewer>
                     </Border>
                 </ControlTemplate>
@@ -550,30 +865,39 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Border
+                                    x:Name="Bd"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    SnapsToDevicePixels="true">
+                                    <ContentPresenter
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
-                                            <Condition Property="IsMouseOver" Value="True"/>
+                                            <Condition Property="IsMouseOver" Value="True" />
                                         </MultiTrigger.Conditions>
                                     </MultiTrigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
-                                            <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                            <Condition Property="IsSelected" Value="True" />
                                         </MultiTrigger.Conditions>
                                     </MultiTrigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
-                                            <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                            <Condition Property="IsSelected" Value="True" />
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="TextElement.Foreground" Value="Red"/>
+                                        <Setter Property="TextElement.Foreground" Value="Red" />
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="TextElement.Foreground" TargetName="Bd" Value="Red"/>
+                                        <Setter TargetName="Bd" Property="TextElement.Foreground" Value="Red" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -584,32 +908,46 @@
         </Setter>
     </Style>
 
-    <!-- 时间轴项 - 下载 - 数据模板 -->
+    <!--  时间轴项 - 下载 - 数据模板  -->
     <Style x:Key="ListBoxStyDown" TargetType="{x:Type ListBox}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Height="16" Margin="0 3 5 1">
-                        <CheckBox IsChecked="{Binding CameraChecked}" Style="{StaticResource checkSty}" Foreground="#c8c7c3" Margin="0 -2 0 0"></CheckBox>
+                    <StackPanel
+                        Height="16"
+                        Margin="0,3,5,1"
+                        Orientation="Horizontal">
+                        <CheckBox
+                            Margin="0,-2,0,0"
+                            Foreground="#c8c7c3"
+                            IsChecked="{Binding CameraChecked}"
+                            Style="{StaticResource checkSty}" />
                     </StackPanel>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
-        <!-- 纵向排列 -->
+        <!--  纵向排列  -->
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" />
+                    <StackPanel VerticalAlignment="Top" Orientation="Vertical" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
-        <!-- 相机名称Listbox容器外观-->
+        <!--  相机名称Listbox容器外观  -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBox}">
-                    <Border Background="#2b3034" BorderBrush="Black" BorderThickness="0 1 0 0">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" Template="{StaticResource ScrollViewerTemplateDown}" Margin="0 -8 0 0" CanContentScroll="True">
-                            <ItemsPresenter/>
+                    <Border
+                        Background="#2b3034"
+                        BorderBrush="Black"
+                        BorderThickness="0,1,0,0">
+                        <ScrollViewer
+                            Margin="0,-8,0,0"
+                            CanContentScroll="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            Template="{StaticResource ScrollViewerTemplateDown}">
+                            <ItemsPresenter />
                         </ScrollViewer>
                     </Border>
                 </ControlTemplate>
@@ -621,30 +959,39 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Border
+                                    x:Name="Bd"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    SnapsToDevicePixels="true">
+                                    <ContentPresenter
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
-                                            <Condition Property="IsMouseOver" Value="True"/>
+                                            <Condition Property="IsMouseOver" Value="True" />
                                         </MultiTrigger.Conditions>
                                     </MultiTrigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
-                                            <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                            <Condition Property="IsSelected" Value="True" />
                                         </MultiTrigger.Conditions>
                                     </MultiTrigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
-                                            <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                            <Condition Property="IsSelected" Value="True" />
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="TextElement.Foreground" Value="Red"/>
+                                        <Setter Property="TextElement.Foreground" Value="Red" />
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="TextElement.Foreground" TargetName="Bd" Value="Red"/>
+                                        <Setter TargetName="Bd" Property="TextElement.Foreground" Value="Red" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -655,163 +1002,311 @@
         </Setter>
     </Style>
 
-    <local:BoolConveterVisibility x:Key="BoolConveterVisibility"></local:BoolConveterVisibility>
-    
-    <!--VideoStateAxisControl控件模板-->
+    <local:BoolConveterVisibility x:Key="BoolConveterVisibility" />
+
+    <!--  VideoStateAxisControl控件模板  -->
     <Style x:Name="VideoST" TargetType="{x:Type local:VideoStateAxisControl}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:VideoStateAxisControl}">
-                    <Border Background="#2b3034" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10" BorderBrush="Black" BorderThickness="1">
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                    <Border
+                        Margin="10"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="#2b3034"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="0"></RowDefinition>
-                                <RowDefinition Height="45"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                                <RowDefinition Height="25"></RowDefinition>
-                                <RowDefinition Height="0"></RowDefinition>
+                                <RowDefinition Height="0" />
+                                <RowDefinition Height="45" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="25" />
+                                <RowDefinition Height="0" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="200"></ColumnDefinition>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="200" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="2" Grid.Row="2">
-                                <ListBox x:Name="Z_Parid_downButtonListBox" Style="{StaticResource ListBoxStyDown}" ScrollViewer.CanContentScroll="True"></ListBox>
+                            <Border Grid.Row="2" Grid.Column="2">
+                                <ListBox
+                                    x:Name="Z_Parid_downButtonListBox"
+                                    ScrollViewer.CanContentScroll="True"
+                                    Style="{StaticResource ListBoxStyDown}" />
                             </Border>
                             <Border Grid.Row="2">
-                                <ListBox x:Name="Z_Parid_cameraListBox" Style="{StaticResource ListBoxStyCarmera}" ScrollViewer.CanContentScroll="True"></ListBox>
+                                <ListBox
+                                    x:Name="Z_Parid_cameraListBox"
+                                    ScrollViewer.CanContentScroll="True"
+                                    Style="{StaticResource ListBoxStyCarmera}" />
                             </Border>
-                            <!--时间轴 主部分-->
-                            <Border CornerRadius="5 5 0 0" BorderBrush="Black"  BorderThickness="1 0 1 0" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" >
-                                <ScrollViewer CanContentScroll="True" x:Name="Z_Parid_scrollViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Template="{StaticResource ScrollViewerTemplate}">
+                            <!--  时间轴 主部分  -->
+                            <Border
+                                Grid.Row="1"
+                                Grid.RowSpan="2"
+                                Grid.Column="1"
+                                BorderBrush="Black"
+                                BorderThickness="1,0,1,0"
+                                CornerRadius="5 5 0 0">
+                                <ScrollViewer
+                                    x:Name="Z_Parid_scrollViewer"
+                                    CanContentScroll="True"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    Template="{StaticResource ScrollViewerTemplate}"
+                                    VerticalScrollBarVisibility="Visible">
                                     <Grid>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="16"></RowDefinition>
-                                            <RowDefinition Height="5"></RowDefinition>
-                                            <RowDefinition Height="16"></RowDefinition>
-                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="16" />
+                                            <RowDefinition Height="5" />
+                                            <RowDefinition Height="16" />
+                                            <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
-                                        <!--历史视频时间轴-->
-                                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Grid.Row="3" Margin="6,1,6,0" >
-                                            <StackPanel Orientation="Vertical" x:Name="Z_videoHistoryPanel" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                                        <!--  历史视频时间轴  -->
+                                        <Grid
+                                            Grid.Row="3"
+                                            Margin="6,1,6,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch">
+                                            <StackPanel
+                                                x:Name="Z_videoHistoryPanel"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
+                                                Orientation="Vertical">
                                                 <StackPanel.Resources>
                                                     <Style TargetType="{x:Type Rectangle}">
-                                                        <Setter Property="Fill" Value="#5bad9b"/>
+                                                        <Setter Property="Fill" Value="#5bad9b" />
                                                     </Style>
                                                     <Style TargetType="{x:Type Canvas}">
-                                                        <Setter Property="Background" Value="#353b40"></Setter>
-                                                        <Setter Property="Height" Value="16"></Setter>
-                                                        <Setter Property="Margin" Value="0 4 0 4"></Setter>
+                                                        <Setter Property="Background" Value="#353b40" />
+                                                        <Setter Property="Height" Value="16" />
+                                                        <Setter Property="Margin" Value="0,4,0,4" />
                                                     </Style>
                                                 </StackPanel.Resources>
                                             </StackPanel>
                                         </Grid>
-                                        <!--剪辑蒙版-->
-                                        <Canvas Grid.Row="3" Margin="6 0 6 0">
-                                            <Rectangle HorizontalAlignment="Left" Fill="Red" Opacity="0.2" Margin="{Binding Margin,ElementName=Z_Parid_clipStackPanel}" 
-                                                       Visibility="{Binding IsChecked,ElementName=Z_Parid_clipOff,Converter={StaticResource BoolConveterVisibility}}" 
-                                                       Width="{Binding ActualWidth,ElementName=Z_Parid_clipAreaBorder}" 
-                                                       Height="{Binding ActualHeight,ElementName=Z_videoHistoryPanel}"></Rectangle>
+                                        <!--  剪辑蒙版  -->
+                                        <Canvas Grid.Row="3" Margin="6,0,6,0">
+                                            <Rectangle
+                                                Width="{Binding ActualWidth, ElementName=Z_Parid_clipAreaBorder}"
+                                                Height="{Binding ActualHeight, ElementName=Z_videoHistoryPanel}"
+                                                Margin="{Binding Margin, ElementName=Z_Parid_clipStackPanel}"
+                                                HorizontalAlignment="Left"
+                                                Fill="Red"
+                                                Opacity="0.2"
+                                                Visibility="{Binding IsChecked, ElementName=Z_Parid_clipOff, Converter={StaticResource BoolConveterVisibility}}" />
                                         </Canvas>
-                                        <!--时间文字-->
-                                        <Border Height="16" Panel.ZIndex="4" >
-                                            <Canvas x:Name="Z_Parid__axisCanvasTimeText" Height="16" Background="#22272a">
+                                        <!--  时间文字  -->
+                                        <Border Height="16" Panel.ZIndex="4">
+                                            <Canvas
+                                                x:Name="Z_Parid__axisCanvasTimeText"
+                                                Height="16"
+                                                Background="#22272a">
                                                 <Canvas.Resources>
                                                     <Style TargetType="{x:Type TextBlock}">
-                                                        <Setter Property="FontSize" Value="10"/>
-                                                        <Setter Property="Foreground" Value="#c8c7c3"/>
+                                                        <Setter Property="FontSize" Value="10" />
+                                                        <Setter Property="Foreground" Value="#c8c7c3" />
                                                     </Style>
                                                 </Canvas.Resources>
                                             </Canvas>
                                         </Border>
-                                        <!--时间刻度-->
-                                        <Border Height="5" Grid.Row="1" Panel.ZIndex="4" Margin="6 0 6 0" >
-                                            <Canvas x:Name="Z_Parid_axisCanvas" Height="5" HorizontalAlignment="Stretch" Background="#141414">
+                                        <!--  时间刻度  -->
+                                        <Border
+                                            Grid.Row="1"
+                                            Height="5"
+                                            Margin="6,0,6,0"
+                                            Panel.ZIndex="4">
+                                            <Canvas
+                                                x:Name="Z_Parid_axisCanvas"
+                                                Height="5"
+                                                HorizontalAlignment="Stretch"
+                                                Background="#141414">
                                                 <Canvas.Resources>
                                                     <Style TargetType="{x:Type Line}">
-                                                        <Setter Property="Stroke" Value="#c8c7c3"/>
-                                                        <Setter Property="StrokeThickness" Value="1"></Setter>
+                                                        <Setter Property="Stroke" Value="#c8c7c3" />
+                                                        <Setter Property="StrokeThickness" Value="1" />
                                                     </Style>
                                                 </Canvas.Resources>
                                             </Canvas>
                                         </Border>
-                                        <!--剪辑控制-->
-                                        <Border Grid.Row="2" Panel.ZIndex="4" >
-                                            <Canvas x:Name="Z_Parid_clipCanvas" Background="#22272a" Height="16">
-                                                <StackPanel x:Name="Z_Parid_clipStackPanel" Orientation="Horizontal" Height="11" Canvas.Left="0" Canvas.Top="5">
-                                                    <Border x:Name="Z_Parid_clipStartBorder" Width="5" Background="#FF4500" Cursor="SizeWE" CornerRadius="2,0,0,2" BorderBrush="Black" BorderThickness="0 0 1 0"/>
-                                                    <Border ToolTip="剪辑控制条" x:Name="Z_Parid_clipAreaBorder" Width="{Binding ActualWidth,ElementName=Z_Parid_axisCanvas}" Background="#FF777777" Cursor="Hand"></Border>
-                                                    <Border x:Name="Z_Parid_clipEndBorder" Width="5" Background="#FF4500" Cursor="SizeWE" CornerRadius="0,2,2,0" BorderBrush="Black" BorderThickness="1 0 0 0"/>
+                                        <!--  剪辑控制  -->
+                                        <Border Grid.Row="2" Panel.ZIndex="4">
+                                            <Canvas
+                                                x:Name="Z_Parid_clipCanvas"
+                                                Height="16"
+                                                Background="#22272a">
+                                                <StackPanel
+                                                    x:Name="Z_Parid_clipStackPanel"
+                                                    Canvas.Left="0"
+                                                    Canvas.Top="5"
+                                                    Height="11"
+                                                    Orientation="Horizontal">
+                                                    <Border
+                                                        x:Name="Z_Parid_clipStartBorder"
+                                                        Width="5"
+                                                        Background="#FF4500"
+                                                        BorderBrush="Black"
+                                                        BorderThickness="0,0,1,0"
+                                                        CornerRadius="2,0,0,2"
+                                                        Cursor="SizeWE" />
+                                                    <Border
+                                                        x:Name="Z_Parid_clipAreaBorder"
+                                                        Width="{Binding ActualWidth, ElementName=Z_Parid_axisCanvas}"
+                                                        Background="#FF777777"
+                                                        Cursor="Hand"
+                                                        ToolTip="剪辑控制条" />
+                                                    <Border
+                                                        x:Name="Z_Parid_clipEndBorder"
+                                                        Width="5"
+                                                        Background="#FF4500"
+                                                        BorderBrush="Black"
+                                                        BorderThickness="1,0,0,0"
+                                                        CornerRadius="0,2,2,0"
+                                                        Cursor="SizeWE" />
                                                 </StackPanel>
-                                                <TextBlock x:Name="Z_Parid_currentTime" Text="" Foreground="#D2931A" Background="#141414" FontSize="11"  Visibility="Collapsed"/>
+                                                <TextBlock
+                                                    x:Name="Z_Parid_currentTime"
+                                                    Background="#141414"
+                                                    FontSize="11"
+                                                    Foreground="#D2931A"
+                                                    Text=""
+                                                    Visibility="Collapsed" />
                                             </Canvas>
                                         </Border>
-                                        <!--时间轴指针-->
-                                        <Canvas x:Name="Z_Parid_timePanel" Grid.Row="0" Grid.RowSpan="3" Panel.ZIndex="5">
+                                        <!--  时间轴指针  -->
+                                        <Canvas
+                                            x:Name="Z_Parid_timePanel"
+                                            Grid.Row="0"
+                                            Grid.RowSpan="3"
+                                            Panel.ZIndex="5">
                                             <Canvas x:Name="Z_Parid_timeLine">
-                                                <Rectangle Width="1" Height="{Binding ElementName=Z_Parid_scrollViewer, Path=ActualHeight}" Fill="#FF4500" Margin="5 3 0 0"></Rectangle>
-                                                <Grid x:Name="Z_Parid_timePoint" Width="12" Height="15" Background="Transparent"  Cursor="Hand"  Margin="-0.5 0 0 0">
-                                                    <Polygon StrokeThickness="0" Fill="#D2931A" Points="1,0 1,10 6,15 11,10 11,0" />
-                                                    <Rectangle Width="6" Height="1" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,6"/>
-                                                    <Rectangle Width="6" Height="1" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <Rectangle
+                                                    Width="1"
+                                                    Height="{Binding ElementName=Z_Parid_scrollViewer, Path=ActualHeight}"
+                                                    Margin="5,3,0,0"
+                                                    Fill="#FF4500" />
+                                                <Grid
+                                                    x:Name="Z_Parid_timePoint"
+                                                    Width="12"
+                                                    Height="15"
+                                                    Margin="-0.5,0,0,0"
+                                                    Background="Transparent"
+                                                    Cursor="Hand">
+                                                    <Polygon
+                                                        Fill="#D2931A"
+                                                        Points="1,0 1,10 6,15 11,10 11,0"
+                                                        StrokeThickness="0" />
+                                                    <Rectangle
+                                                        Width="6"
+                                                        Height="1"
+                                                        Margin="0,0,0,6"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Fill="Black" />
+                                                    <Rectangle
+                                                        Width="6"
+                                                        Height="1"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Fill="Black" />
                                                 </Grid>
                                             </Canvas>
                                         </Canvas>
                                     </Grid>
                                 </ScrollViewer>
                             </Border>
-                            <!--状态栏：缩放滚动条，当前时间等-->
-                            <Border BorderBrush="Black" BorderThickness="0 1 0 0" Grid.Row="3" Grid.Column="0" Background="#22272a" Grid.ColumnSpan="3">
+                            <!--  状态栏：缩放滚动条，当前时间等  -->
+                            <Border
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Background="#22272a"
+                                BorderBrush="Black"
+                                BorderThickness="0,1,0,0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="270"></ColumnDefinition>
-                                        <ColumnDefinition Width="270"></ColumnDefinition>
-                                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                                        <ColumnDefinition Width="270" />
+                                        <ColumnDefinition Width="270" />
+                                        <ColumnDefinition Width="2*" />
                                     </Grid.ColumnDefinitions>
-                                     <!--时间轴缩放滚动条-->
-                                    <StackPanel  Grid.Column="0" Orientation="Horizontal" Margin="5 0 0 0" VerticalAlignment="Center">
-                                        <Viewbox Width="12" Height="12" HorizontalAlignment="Left">
-                                            <Path Data="{StaticResource imgData}" Fill="#D2931A"></Path>
+                                    <!--  时间轴缩放滚动条  -->
+                                    <StackPanel
+                                        Grid.Column="0"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <Viewbox
+                                            Width="12"
+                                            Height="12"
+                                            HorizontalAlignment="Left">
+                                            <Path Data="{StaticResource imgData}" Fill="#D2931A" />
                                         </Viewbox>
-                                        <Slider x:Name="Z_Parid_zoomSlider" Width="96" Margin="10 0 10 0" Minimum="1" Maximum="3">
+                                        <Slider
+                                            x:Name="Z_Parid_zoomSlider"
+                                            Width="96"
+                                            Margin="10,0,10,0"
+                                            Maximum="3"
+                                            Minimum="1">
                                             <Slider.Style>
                                                 <Style TargetType="{x:Type Slider}">
-                                                    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-                                                    <Setter Property="Background" Value="Transparent"/>
-                                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                                    <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}"/>
-                                                    <Setter Property="Template" Value="{StaticResource SliderHorizontal}"/>
+                                                    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                    <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}" />
+                                                    <Setter Property="Template" Value="{StaticResource SliderHorizontal}" />
                                                     <Style.Triggers>
                                                         <Trigger Property="Orientation" Value="Vertical">
-                                                            <Setter Property="Template" Value="{StaticResource SliderVertical}"/>
+                                                            <Setter Property="Template" Value="{StaticResource SliderVertical}" />
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Slider.Style>
                                         </Slider>
-                                        <Viewbox Width="17" Height="17" HorizontalAlignment="Right" Margin="0 0 0 2">
-                                            <Path Data="{StaticResource imgData}" Fill="#D2931A" ></Path>
+                                        <Viewbox
+                                            Width="17"
+                                            Height="17"
+                                            Margin="0,0,0,2"
+                                            HorizontalAlignment="Right">
+                                            <Path Data="{StaticResource imgData}" Fill="#D2931A" />
                                         </Viewbox>
-                                        <TextBlock Text="时间轴缩放：" Foreground="#D2931A" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
-                                        <TextBlock Text="{Binding Value,ElementName=Z_Parid_zoomSlider,StringFormat={}{0:F1}}" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
-                                        <TextBlock Text=" x" Foreground="#D2931A" VerticalAlignment="Center"></TextBlock>
+                                        <TextBlock
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Foreground="#D2931A"
+                                            Text="时间轴缩放：" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Foreground="#D2931A"
+                                            Text="{Binding Value, ElementName=Z_Parid_zoomSlider, StringFormat={}{0:F1}}" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Foreground="#D2931A"
+                                            Text=" x" />
                                     </StackPanel>
-                                    <!--剪辑控制开启，剪辑控制时间范围-->
-                                    <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <!--  剪辑控制开启，剪辑控制时间范围  -->
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
                                         <StackPanel.Resources>
                                             <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Foreground" Value="#D2931A"></Setter>
-                                                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                                <Setter Property="Foreground" Value="#D2931A" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
                                             </Style>
                                         </StackPanel.Resources>
-                                        <CheckBox x:Name="Z_Parid_clipOff" Style="{StaticResource checkSty}" Content="剪辑控制" Foreground="#D2931A" ></CheckBox>
-                                        <TextBlock Margin="40 0 0 0" Text="剪辑范围：" ></TextBlock>
-                                        <TextBlock x:Name="Z_Parid_clipStateTimeTextBlock"></TextBlock>
-                                        <TextBlock Text=" - "></TextBlock>
-                                        <TextBlock x:Name="Z_Parid_clipEndTimeTextBlock"></TextBlock>
-                                        <TextBlock Margin="40 0 0 0" Text="指针时间："></TextBlock>
-                                        <TextBlock Text="{Binding Text,ElementName=Z_Parid_currentTime}"></TextBlock>
+                                        <CheckBox
+                                            x:Name="Z_Parid_clipOff"
+                                            Content="剪辑控制"
+                                            Foreground="#D2931A"
+                                            Style="{StaticResource checkSty}" />
+                                        <TextBlock Margin="40,0,0,0" Text="剪辑范围：" />
+                                        <TextBlock x:Name="Z_Parid_clipStateTimeTextBlock" />
+                                        <TextBlock Text=" - " />
+                                        <TextBlock x:Name="Z_Parid_clipEndTimeTextBlock" />
+                                        <TextBlock Margin="40,0,0,0" Text="指针时间：" />
+                                        <TextBlock Text="{Binding Text, ElementName=Z_Parid_currentTime}" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
