@@ -38,7 +38,7 @@ namespace VideoStateAxis
     [TemplatePart(Name = Parid_clipStateTimeTextBlock)]
     [TemplatePart(Name = Parid_clipEndTimeTextBlock)]
     [TemplatePart(Name = Parid_cameraListBox)]
-    [TemplatePart(Name = Parid_carmeraBar)]
+    [TemplatePart(Name = Parid_downButtonListBox)]
 
     public class VideoStateAxisControl : Control
     {
@@ -64,9 +64,10 @@ namespace VideoStateAxis
         private TextBlock _clipEndTimeTextBlock;      //剪辑结束时间指示器
 
         private ListBox _cameraListBox;                    //相机列表
+        private ListBox _downButtonListBox;             //下载列表
         private ScrollViewer _cameraScrollViewer;     //相机列表ScrollViewer
+        private ScrollViewer _downScrollViewer;       //下载列表ScrollViewer
 
-        private ScrollBar _carmeraBar;                     //相机列表ScrollBar
 
         private const string Parid_axisCanvas = "Z_Parid_axisCanvas";
         private const string Parid__axisCanvasTimeText = "Z_Parid__axisCanvasTimeText";
@@ -87,7 +88,7 @@ namespace VideoStateAxis
         private const string Parid_clipStateTimeTextBlock = "Z_Parid_clipStateTimeTextBlock";
         private const string Parid_clipEndTimeTextBlock = "Z_Parid_clipEndTimeTextBlock";
         private const string Parid_cameraListBox = "Z_Parid_cameraListBox";
-        private const string Parid_carmeraBar = "Z_Parid_carmeraBar";
+        private const string Parid_downButtonListBox = "Z_Parid_downButtonListBox";
 
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
@@ -474,9 +475,16 @@ namespace VideoStateAxis
             _axisCanvas.Margin = new Thickness(0, _scrollViewer.VerticalOffset, 0, 0);
             _clipCanvas.Margin = new Thickness(0, _scrollViewer.VerticalOffset, 0, 0);
 
-            if(_cameraScrollViewer != null)
+
+            if (_cameraScrollViewer != null)
             {
-                _cameraScrollViewer.ScrollToVerticalOffset(_scrollViewer.VerticalOffset);
+                double offset = _scrollViewer.VerticalOffset / _scrollViewer.ScrollableHeight * _cameraScrollViewer.ScrollableHeight;
+                _cameraScrollViewer.ScrollToVerticalOffset(double.IsNaN(offset) ? 0 : offset);
+            }
+            if (_downScrollViewer != null)
+            {
+                double offset = _scrollViewer.VerticalOffset / _scrollViewer.ScrollableHeight * _downScrollViewer.ScrollableHeight;
+                _downScrollViewer.ScrollToVerticalOffset(double.IsNaN(offset) ? 0 : offset);
             }
         }
 
@@ -487,10 +495,32 @@ namespace VideoStateAxis
         /// <param name="e"></param>
         private void _cameraScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            if(_scrollViewer != null)
+            if (_scrollViewer != null)
             {
-                _scrollViewer.ScrollToVerticalOffset(_cameraScrollViewer.VerticalOffset);
-     
+                double offset = _cameraScrollViewer.VerticalOffset / _cameraScrollViewer.ScrollableHeight * _scrollViewer.ScrollableHeight;
+                _scrollViewer.ScrollToVerticalOffset(double.IsNaN(offset) ? 0 : offset);
+            }
+            if(_downScrollViewer != null)
+            {
+                _downScrollViewer.ScrollToVerticalOffset(_cameraScrollViewer.VerticalOffset);
+            }
+        }
+
+        /// <summary>
+        ///  下载列表ListBox的ScrollerViewerChanged事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _downScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (_scrollViewer != null)
+            {
+                double offset = _downScrollViewer.VerticalOffset / _downScrollViewer.ScrollableHeight * _scrollViewer.ScrollableHeight;
+                _scrollViewer.ScrollToVerticalOffset(double.IsNaN(offset) ? 0 : offset);
+            }
+            if (_cameraScrollViewer != null)
+            {
+                _cameraScrollViewer.ScrollToVerticalOffset(_downScrollViewer.VerticalOffset);
             }
         }
 
@@ -516,12 +546,12 @@ namespace VideoStateAxis
         /// <param name="delta">鼠标位于Canvas坐标X</param>
         private void TimeLine_Resver(double delta)
         {
-            double timePointMaxLeft = _timePanel.ActualWidth - _timePoint.ActualWidth;
+            double timePointMaxLeft = _timePanel.ActualWidth - _timePoint.ActualWidth ;
             double currentTimeMaxLeft = _timePanel.ActualWidth - _currentTime.ActualWidth;
             _currentTime.Text = (AxisTime = XToDateTime(delta < 0 ? 0 : (delta > timePointMaxLeft ? timePointMaxLeft : delta))).ToString("yyyy-MM-dd HH:mm:ss");
             _currentTime.Margin = delta < currentTimeMaxLeft ?
-                new Thickness(delta < 0 ? 10 : delta + 10, 0, 0, 0) :
-                new Thickness(delta > timePointMaxLeft ? timePointMaxLeft - _currentTime.ActualWidth : delta - _currentTime.ActualWidth, 0, 0, 0);
+                new Thickness(delta < 0 ? 10 : delta + 10, 2, 0, 0) :
+                new Thickness(delta > timePointMaxLeft ? timePointMaxLeft - _currentTime.ActualWidth : delta - _currentTime.ActualWidth, 2, 0, 0);
         }
 
         /// <summary>
@@ -596,14 +626,23 @@ namespace VideoStateAxis
         /// </summary>
         private void InitiaListBox_ScrollChanged()
         {
-            Decorator border = VisualTreeHelper.GetChild(_cameraListBox, 0) as Decorator;
-            if (border != null)
+            Decorator carmeraborder = VisualTreeHelper.GetChild(_cameraListBox, 0) as Decorator;
+            if (carmeraborder != null)
             {
-                _cameraScrollViewer = border.Child as ScrollViewer;
+                _cameraScrollViewer = carmeraborder.Child as ScrollViewer;
                 if (_cameraScrollViewer != null)
                 {
                     _cameraScrollViewer.ScrollChanged += _cameraScrollViewer_ScrollChanged;
-                    _carmeraBar.ViewportSize = _cameraScrollViewer.ViewportHeight;
+                }
+            }
+
+            Decorator downborder = VisualTreeHelper.GetChild(_downButtonListBox, 0) as Decorator;
+            if(downborder != null)
+            {
+                _downScrollViewer = downborder.Child as ScrollViewer;
+                if(_downScrollViewer != null)
+                {
+                    _downScrollViewer.ScrollChanged += _downScrollViewer_ScrollChanged;
                 }
             }
         }
@@ -831,15 +870,11 @@ namespace VideoStateAxis
                 Binding binding = new Binding("HistoryVideoSources") { Source = this };
                 _cameraListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
             }
-            if((_carmeraBar = GetTemplateChild(Parid_carmeraBar) as ScrollBar) !=null)
+            if((_downButtonListBox = GetTemplateChild(Parid_downButtonListBox) as ListBox) != null)
             {
-                _carmeraBar.Scroll += _carmeraBar_Scroll;
+                Binding binding = new Binding("HistoryVideoSources") { Source = this };
+                _downButtonListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
             }
-        }
-
-        private void _carmeraBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            
         }
     }
 
