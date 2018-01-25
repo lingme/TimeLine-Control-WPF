@@ -328,6 +328,11 @@ namespace VideoStateAxis
             }
         }
 
+        /// <summary>
+        /// 剪辑时间变化，刷新剪辑控制条
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="e"></param>
         private static void OnClipTimeChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
         {
             VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
@@ -375,7 +380,7 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 通过事件刷新指针位置
+        /// 刷新指针位置
         /// </summary>
         /// <param name="dt"></param>
         private void RefreshTimeLineLeft(DateTime dt)
