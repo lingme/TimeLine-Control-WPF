@@ -90,6 +90,10 @@ namespace VideoStateAxis
         private const string Parid_cameraListBox = "Z_Parid_cameraListBox";
         private const string Parid_downButtonListBox = "Z_Parid_downButtonListBox";
 
+        private const string GeometryDown = "M954.123536 509.086647 526.172791 932.999426c-8.074909 8.074909-20.185738 8.074909-28.260647 0L69.960375 509.086647c-12.110829-14.130835-4.427846-34.317597 14.130835-34.317597l215.994356 0L300.085566 107.149369c0-12.111852 10.093892-22.205745 22.204721-22.205745l379.50436 0c12.110829 0 22.204721 10.093892 22.204721 24.223704l0 365.601722 215.994356 0C958.159456 474.770074 966.234365 496.975818 954.123536 509.086647z";
+        private const string GeometryFavorite = "M1024 378.88l-314.647273-37.236364L512 0 314.647273 341.643636 0 378.88l236.450909 266.24L191.767273 1024 512 872.261818 832.232727 1024l-44.683636-378.88L1024 378.88z";
+        private const string GeometryOpen = "M512 68.191078c-245.204631 0-443.808922 198.60429-443.808922 443.808922s198.60429 443.808922 443.808922 443.808922 443.808922-198.60429 443.808922-443.808922S757.203608 68.191078 512 68.191078zM423.23842 711.713554 423.23842 312.285422l266.284739 199.713554L423.23842 711.713554z";
+
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
             typeof(ObservableCollection<VideoStateItem>), 
@@ -805,11 +809,92 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 将原始控件的样式覆盖
+        /// 初始化下载数据模板
         /// </summary>
-        static VideoStateAxisControl()
+        private void Down_ListBox_Template()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(VideoStateAxisControl), new FrameworkPropertyMetadata(typeof(VideoStateAxisControl)));
+            DataTemplate dataTemplate = new DataTemplate();
+            FrameworkElementFactory topElement = CreateTopElement();
+
+            FrameworkElementFactory downPath = CreatePathElement(GeometryDown, "下载历史");
+            FrameworkElementFactory downViewBox = CreateViewBoxElement("Down", new Thickness(0, 0, 0, 2), downPath);
+
+            FrameworkElementFactory favoritePath = CreatePathElement(GeometryFavorite, "收藏历史");
+            FrameworkElementFactory favoriteViewBox = CreateViewBoxElement("Favorite", new Thickness(10, 0, 0, 2), favoritePath);
+
+            FrameworkElementFactory openPath = CreatePathElement(GeometryOpen, "打开视频");
+            FrameworkElementFactory openViewBox = CreateViewBoxElement("Open", new Thickness(10, 0, 0, 2), openPath);
+
+            topElement.AppendChild(downViewBox);
+            topElement.AppendChild(favoriteViewBox);
+            topElement.AppendChild(openViewBox);
+
+            dataTemplate.VisualTree = topElement;
+
+            _downButtonListBox.ItemTemplate = dataTemplate;
+        }
+
+        /// <summary>
+        /// 创建顶层数据模板容器
+        /// </summary>
+        /// <returns></returns>
+        private FrameworkElementFactory CreateTopElement()
+        {
+            FrameworkElementFactory frameworkElementFactory = new FrameworkElementFactory(typeof(StackPanel));
+            frameworkElementFactory.SetValue(StackPanel.HeightProperty, 16.00);
+            frameworkElementFactory.SetValue(StackPanel.MarginProperty, new Thickness(0, 3, 5, 1));
+            frameworkElementFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+            return frameworkElementFactory;
+        }
+
+        /// <summary>
+        /// 创建Path元素模板
+        /// </summary>
+        /// <param name="GeometryPath"></param>
+        /// <param name="ToolTipStr"></param>
+        /// <returns></returns>
+        private FrameworkElementFactory CreatePathElement(string GeometryPath ,string ToolTipStr)
+        {
+            FrameworkElementFactory path = new FrameworkElementFactory(typeof(Path));
+            path.SetValue(CursorProperty, Cursors.Hand);
+            path.SetValue(Path.DataProperty, Geometry.Parse(GeometryPath));
+            path.SetValue(Path.FillProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#c8c7c3")));
+            path.SetValue(ToolTipProperty, ToolTipStr);
+            return path;
+        }
+
+        /// <summary>
+        /// 创建ViewBox元素模板
+        /// </summary>
+        /// <param name="NameStr"></param>
+        /// <param name="thick"></param>
+        /// <param name="pathChild"></param>
+        /// <returns></returns>
+        private FrameworkElementFactory CreateViewBoxElement(string NameStr , Thickness thick , FrameworkElementFactory pathChild)
+        {
+            FrameworkElementFactory viewBox = new FrameworkElementFactory(typeof(Viewbox));
+            viewBox.SetValue(HeightProperty, 14.00);
+            viewBox.SetValue(WidthProperty, 14.00);
+            viewBox.SetValue(MarginProperty, thick);
+            viewBox.SetValue(NameProperty, NameStr);
+            viewBox.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(viewBox_LeftMouseButtonDown));
+            viewBox.AppendChild(pathChild);
+            return viewBox;
+        }
+
+        /// <summary>
+        /// 模板事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void viewBox_LeftMouseButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Viewbox viewBox = sender as Viewbox;
+            VideoStateItem videoState = viewBox.DataContext as VideoStateItem;
+            if(videoState != null && viewBox != null)
+            {
+
+            }
         }
 
         /// <summary>
@@ -880,43 +965,20 @@ namespace VideoStateAxis
                 Binding binding = new Binding("HistoryVideoSources") { Source = this };
                 _cameraListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
             }
-            if((_downButtonListBox = GetTemplateChild(Parid_downButtonListBox) as ListBox) != null)
+            if ((_downButtonListBox = GetTemplateChild(Parid_downButtonListBox) as ListBox) != null)
             {
+                Binding binding = new Binding("HistoryVideoSources") { Source = this };
+                _downButtonListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
                 Down_ListBox_Template();
             }
         }
 
         /// <summary>
-        /// 初始化数据模板
+        /// 将原始控件的样式覆盖
         /// </summary>
-        private void Down_ListBox_Template()
+        static VideoStateAxisControl()
         {
-            Binding binding = new Binding("HistoryVideoSources") { Source = this };
-            _downButtonListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
-
-            DataTemplate dataTemplate = new DataTemplate();
-            FrameworkElementFactory frameworkElementFactory = new FrameworkElementFactory(typeof(StackPanel));
-            frameworkElementFactory.SetValue(StackPanel.HeightProperty, 16);
-            frameworkElementFactory.SetValue(StackPanel.MarginProperty, new Thickness(0, 3, 5, 1));
-            frameworkElementFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-
-
-            FrameworkElementFactory pathDown = new FrameworkElementFactory(typeof(Path));
-            pathDown.SetValue(Path.CursorProperty, CursorType.Hand);
-            pathDown.SetValue(Path.DataProperty, Geometry.Parse("M954.123536 509.086647 526.172791 932.999426c-8.074909 8.074909-20.185738 8.074909-28.260647 0L69.960375 509.086647c-12.110829-14.130835-4.427846-34.317597 14.130835-34.317597l215.994356 0L300.085566 107.149369c0-12.111852 10.093892-22.205745 22.204721-22.205745l379.50436 0c12.110829 0 22.204721 10.093892 22.204721 24.223704l0 365.601722 215.994356 0C958.159456 474.770074 966.234365 496.975818 954.123536 509.086647z"));
-            pathDown.SetValue(Path.FillProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#c8c7c3")));
-            pathDown.SetValue(Path.ToolTipProperty, "下载");
-
-            FrameworkElementFactory viewBox_Down = new FrameworkElementFactory(typeof(Viewbox));
-            viewBox_Down.SetValue(Viewbox.HeightProperty, 14);
-            viewBox_Down.SetValue(Viewbox.WidthProperty, 14);
-            viewBox_Down.SetValue(Viewbox.MarginProperty, new Thickness(0, 0, 0, 2));
-
-            viewBox_Down.AppendChild(pathDown);
-            frameworkElementFactory.AppendChild(viewBox_Down);
-            dataTemplate.VisualTree = frameworkElementFactory;
-
-            _downButtonListBox.ItemTemplate = dataTemplate;
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(VideoStateAxisControl), new FrameworkPropertyMetadata(typeof(VideoStateAxisControl)));
         }
     }
 
