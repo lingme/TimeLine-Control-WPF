@@ -107,7 +107,7 @@
                 Background="Transparent"
                 Cursor="Hand">
                 <Polygon
-                    Fill="#D2931A"
+                    Fill="#c8c7c3"
                     Points="1,1 1,10 6,15 11,10 11,1"
                     StrokeThickness="0" />
                 <Rectangle
@@ -163,7 +163,7 @@
                     Margin="5,0"
                     VerticalAlignment="center"
                     Background="{StaticResource SliderThumb.Track.Background}"
-                    BorderBrush="#D2931A"
+                    BorderBrush="#c8c7c3"
                     BorderThickness="1">
                     <Canvas Margin="-6,-1">
                         <Rectangle
@@ -544,7 +544,7 @@
             x:Name="Bg"
             Margin="2"
             Background="#FF777777"
-            CornerRadius="3"
+            CornerRadius="2"
             SnapsToDevicePixels="True" />
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -848,7 +848,7 @@
                     <Border
                         Background="#2b3034"
                         BorderBrush="Black"
-                        BorderThickness="0,1,0,0">
+                        BorderThickness="0">
                         <ScrollViewer
                             Margin="0,-8,0,0"
                             CanContentScroll="True"
@@ -988,6 +988,20 @@
         </Setter>
     </Style>
 
+    <!--  缩放时间轴滑块样式  -->
+    <Style x:Key="sliderStyl" TargetType="{x:Type Slider}">
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}" />
+        <Setter Property="Template" Value="{StaticResource SliderHorizontal}" />
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="Template" Value="{StaticResource SliderVertical}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <local:BoolConveterVisibility x:Key="BoolConveterVisibility" />
 
     <!--  VideoStateAxisControl控件模板  -->
@@ -1013,8 +1027,57 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="200" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="100" />
                             </Grid.ColumnDefinitions>
+                            <!--  时间轴缩放滚动条  -->
+                            <Border
+                                Grid.Row="1"
+                                BorderBrush="Black"
+                                Background="#22272a"
+                                BorderThickness="0,0,0,1">
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Viewbox
+                                        Width="15"
+                                        Height="15"
+                                        HorizontalAlignment="Left">
+                                        <Path Data="{StaticResource imgData}" Fill="#c8c7c3" />
+                                    </Viewbox>
+                                    <Slider
+                                        x:Name="Z_Parid_zoomSlider"
+                                        Width="96"
+                                        Margin="10,0,10,0"
+                                        Maximum="3"
+                                        Minimum="1"
+                                        Style="{StaticResource sliderStyl}" />
+                                    <Viewbox
+                                        Width="20"
+                                        Height="20"
+                                        Margin="0,0,0,2"
+                                        HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource imgData}" Fill="#c8c7c3" />
+                                    </Viewbox>
+                                </StackPanel>
+                            </Border>
+                            <!--  是否开启剪辑控制  -->
+                            <Border
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Background="#22272a"
+                                BorderBrush="Black"
+                                BorderThickness="0,0,0,1">
+                                <CheckBox
+                                    x:Name="Z_Parid_clipOff"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="剪辑控制"
+                                    Foreground="#c8c7c3"
+                                    Style="{StaticResource checkSty}" />
+                            </Border>
                             <Border Grid.Row="2" Grid.Column="2">
                                 <ListBox
                                     x:Name="Z_Parid_downButtonListBox"
@@ -1033,10 +1096,11 @@
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
                                 BorderBrush="Black"
-                                BorderThickness="1,0,1,0"
+                                BorderThickness="0"
                                 CornerRadius="5 5 0 0">
                                 <ScrollViewer
                                     x:Name="Z_Parid_scrollViewer"
+                                    Background="#22272a"
                                     CanContentScroll="True"
                                     HorizontalScrollBarVisibility="Visible"
                                     Template="{StaticResource ScrollViewerTemplate}"
@@ -1051,11 +1115,12 @@
                                         <!--  历史视频时间轴  -->
                                         <Grid
                                             Grid.Row="3"
-                                            Margin="6,1,6,0"
                                             HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Stretch">
+                                            VerticalAlignment="Stretch"
+                                            Background="#2b3034">
                                             <StackPanel
                                                 x:Name="Z_videoHistoryPanel"
+                                                Margin="6,1,6,0"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Top"
                                                 Orientation="Vertical">
@@ -1083,19 +1148,17 @@
                                                 Visibility="{Binding IsChecked, ElementName=Z_Parid_clipOff, Converter={StaticResource BoolConveterVisibility}}" />
                                         </Canvas>
                                         <!--  时间文字  -->
-                                        <Border Height="16" Panel.ZIndex="4">
-                                            <Canvas
-                                                x:Name="Z_Parid__axisCanvasTimeText"
-                                                Height="16"
-                                                Background="#22272a">
-                                                <Canvas.Resources>
-                                                    <Style TargetType="{x:Type TextBlock}">
-                                                        <Setter Property="FontSize" Value="10" />
-                                                        <Setter Property="Foreground" Value="#c8c7c3" />
-                                                    </Style>
-                                                </Canvas.Resources>
-                                            </Canvas>
-                                        </Border>
+                                        <Canvas
+                                            x:Name="Z_Parid__axisCanvasTimeText"
+                                            Height="16"
+                                            Background="#22272a">
+                                            <Canvas.Resources>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="FontSize" Value="10" />
+                                                    <Setter Property="Foreground" Value="#c8c7c3" />
+                                                </Style>
+                                            </Canvas.Resources>
+                                        </Canvas>
                                         <!--  时间刻度  -->
                                         <Border
                                             Grid.Row="1"
@@ -1120,12 +1183,12 @@
                                             <Canvas
                                                 x:Name="Z_Parid_clipCanvas"
                                                 Height="16"
-                                                Background="#22272a">
+                                                Background="#131313">
                                                 <StackPanel
                                                     x:Name="Z_Parid_clipStackPanel"
                                                     Canvas.Left="0"
-                                                    Canvas.Top="5"
-                                                    Height="11"
+                                                    Canvas.Top="2"
+                                                    Height="13"
                                                     Orientation="Horizontal">
                                                     <Border
                                                         x:Name="Z_Parid_clipStartBorder"
@@ -1176,7 +1239,6 @@
                                                     Width="12"
                                                     Height="15"
                                                     Margin="-0.5,0,0,0"
-                                                    Background="Transparent"
                                                     Cursor="Hand">
                                                     <Polygon
                                                         Fill="#D2931A"
@@ -1204,89 +1266,28 @@
                             <!--  状态栏：缩放滚动条，当前时间等  -->
                             <Border
                                 Grid.Row="3"
-                                Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Background="#22272a"
                                 BorderBrush="Black"
                                 BorderThickness="0,1,0,0">
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="270" />
-                                        <ColumnDefinition Width="270" />
-                                        <ColumnDefinition Width="2*" />
-                                    </Grid.ColumnDefinitions>
-                                    <!--  时间轴缩放滚动条  -->
+                                    <!--  剪辑控制时间范围  -->
                                     <StackPanel
-                                        Grid.Column="0"
-                                        Margin="5,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <Viewbox
-                                            Width="12"
-                                            Height="12"
-                                            HorizontalAlignment="Left">
-                                            <Path Data="{StaticResource imgData}" Fill="#D2931A" />
-                                        </Viewbox>
-                                        <Slider
-                                            x:Name="Z_Parid_zoomSlider"
-                                            Width="96"
-                                            Margin="10,0,10,0"
-                                            Maximum="3"
-                                            Minimum="1">
-                                            <Slider.Style>
-                                                <Style TargetType="{x:Type Slider}">
-                                                    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
-                                                    <Setter Property="Background" Value="Transparent" />
-                                                    <Setter Property="BorderBrush" Value="Transparent" />
-                                                    <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Foreground}" />
-                                                    <Setter Property="Template" Value="{StaticResource SliderHorizontal}" />
-                                                    <Style.Triggers>
-                                                        <Trigger Property="Orientation" Value="Vertical">
-                                                            <Setter Property="Template" Value="{StaticResource SliderVertical}" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Slider.Style>
-                                        </Slider>
-                                        <Viewbox
-                                            Width="17"
-                                            Height="17"
-                                            Margin="0,0,0,2"
-                                            HorizontalAlignment="Right">
-                                            <Path Data="{StaticResource imgData}" Fill="#D2931A" />
-                                        </Viewbox>
-                                        <TextBlock
-                                            Margin="10,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#D2931A"
-                                            Text="时间轴缩放：" />
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Foreground="#D2931A"
-                                            Text="{Binding Value, ElementName=Z_Parid_zoomSlider, StringFormat={}{0:F1}}" />
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Foreground="#D2931A"
-                                            Text=" x" />
-                                    </StackPanel>
-                                    <!--  剪辑控制开启，剪辑控制时间范围  -->
-                                    <StackPanel
-                                        Grid.Column="1"
-                                        Grid.ColumnSpan="2"
-                                        HorizontalAlignment="Center"
+                                        HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         Orientation="Horizontal">
                                         <StackPanel.Resources>
                                             <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Foreground" Value="#D2931A" />
+                                                <Setter Property="Foreground" Value="#c8c7c3" />
                                                 <Setter Property="VerticalAlignment" Value="Center" />
                                             </Style>
                                         </StackPanel.Resources>
-                                        <CheckBox
-                                            x:Name="Z_Parid_clipOff"
-                                            Content="剪辑控制"
-                                            Foreground="#D2931A"
-                                            Style="{StaticResource checkSty}" />
+                                        <TextBlock
+                                            Margin="20,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="时间轴缩放：" />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Value, ElementName=Z_Parid_zoomSlider, StringFormat={}{0:F1}}" />
+                                        <TextBlock VerticalAlignment="Center" Text=" x" />
                                         <TextBlock Margin="40,0,0,0" Text="剪辑范围：" />
                                         <TextBlock x:Name="Z_Parid_clipStateTimeTextBlock" />
                                         <TextBlock Text=" - " />
