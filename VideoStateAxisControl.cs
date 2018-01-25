@@ -20,6 +20,8 @@ using System.Windows.Shapes;
 
 namespace VideoStateAxis
 {
+    #region TemplatePart 模板元素声明
+
     [TemplatePart(Name = Parid_axisCanvas)]
     [TemplatePart(Name = Parid_timePoint)]
     [TemplatePart(Name = Parid_currentTime)]
@@ -40,8 +42,11 @@ namespace VideoStateAxis
     [TemplatePart(Name = Parid_cameraListBox)]
     [TemplatePart(Name = Parid_downButtonListBox)]
 
+    #endregion
     public class VideoStateAxisControl : Control
     {
+        #region UIElement 模板元素
+
         private StackPanel _videoHistoryPanel;           //历史时间轴容器
         private ScrollViewer _scrollViewer;                 //滚动视图
         private Canvas _axisCanvas;                          //时间刻度尺容器
@@ -68,6 +73,9 @@ namespace VideoStateAxis
         private ScrollViewer _cameraScrollViewer;     //相机列表ScrollViewer
         private ScrollViewer _downScrollViewer;       //下载列表ScrollViewer
 
+        #endregion
+
+        #region ConstString 模板元素名称，Geometry图像数据
 
         private const string Parid_axisCanvas = "Z_Parid_axisCanvas";
         private const string Parid__axisCanvasTimeText = "Z_Parid__axisCanvasTimeText";
@@ -94,6 +102,9 @@ namespace VideoStateAxis
         private const string GeometryFavorite = "M1024 378.88l-314.647273-37.236364L512 0 314.647273 341.643636 0 378.88l236.450909 266.24L191.767273 1024 512 872.261818 832.232727 1024l-44.683636-378.88L1024 378.88z";
         private const string GeometryOpen = "M512 68.191078c-245.204631 0-443.808922 198.60429-443.808922 443.808922s198.60429 443.808922 443.808922 443.808922 443.808922-198.60429 443.808922-443.808922S757.203608 68.191078 512 68.191078zM423.23842 711.713554 423.23842 312.285422l266.284739 199.713554L423.23842 711.713554z";
 
+        #endregion
+
+        #region DependencyProperty 依赖项属性
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
             "HistoryVideoSources", 
             typeof(ObservableCollection<VideoStateItem>), 
@@ -135,6 +146,10 @@ namespace VideoStateAxis
             typeof(bool), 
             typeof(VideoStateAxisControl),
             new PropertyMetadata(OnClipOffChanged));
+
+        #endregion
+
+        #region Property 属性关联字段
 
         /// <summary>
         /// 剪辑开启控制
@@ -242,6 +257,29 @@ namespace VideoStateAxis
         /// 时间轴缩放比例
         /// </summary>
         private double Slider_Magnification = 1;
+
+        #endregion
+
+        #region RouteEvent 路由事件
+
+        public static readonly RoutedEvent AxisDownRoutedEvent = EventManager.RegisterRoutedEvent(
+            "AxisDown",
+            RoutingStrategy.Bubble,
+            typeof(EventHandler<VideoStateAxisRoutedEventArgs>),
+            typeof(VideoStateAxisControl));
+
+        /// <summary>
+        /// 下载路由事件
+        /// </summary>
+        public event RoutedEventHandler AxisDown
+        {
+            add { this.AddHandler(AxisDownRoutedEvent, value); }
+            remove { this.RemoveHandler(AxisDownRoutedEvent, value); }
+        }
+
+        #endregion
+
+        #region Method 方法
 
         /// <summary>
         /// 历史查询时间 - 改变
@@ -817,20 +855,18 @@ namespace VideoStateAxis
             FrameworkElementFactory topElement = CreateTopElement();
 
             FrameworkElementFactory downPath = CreatePathElement(GeometryDown, "下载历史");
-            FrameworkElementFactory downViewBox = CreateViewBoxElement("Down", new Thickness(0, 0, 0, 2), downPath);
+            FrameworkElementFactory downViewBox = CreateViewBoxElement(VideoAxisActionType.Dwon.ToString(), new Thickness(0, 0, 0, 2), downPath);
+            topElement.AppendChild(downViewBox);
 
             FrameworkElementFactory favoritePath = CreatePathElement(GeometryFavorite, "收藏历史");
-            FrameworkElementFactory favoriteViewBox = CreateViewBoxElement("Favorite", new Thickness(10, 0, 0, 2), favoritePath);
+            FrameworkElementFactory favoriteViewBox = CreateViewBoxElement(VideoAxisActionType.Favorite.ToString(), new Thickness(10, 0, 0, 2), favoritePath);
+            topElement.AppendChild(favoriteViewBox);
 
             FrameworkElementFactory openPath = CreatePathElement(GeometryOpen, "打开视频");
-            FrameworkElementFactory openViewBox = CreateViewBoxElement("Open", new Thickness(10, 0, 0, 2), openPath);
-
-            topElement.AppendChild(downViewBox);
-            topElement.AppendChild(favoriteViewBox);
+            FrameworkElementFactory openViewBox = CreateViewBoxElement(VideoAxisActionType.Open.ToString(), new Thickness(10, 0, 0, 2), openPath);
             topElement.AppendChild(openViewBox);
 
             dataTemplate.VisualTree = topElement;
-
             _downButtonListBox.ItemTemplate = dataTemplate;
         }
 
@@ -893,7 +929,24 @@ namespace VideoStateAxis
             VideoStateItem videoState = viewBox.DataContext as VideoStateItem;
             if(videoState != null && viewBox != null)
             {
-
+                VideoStateAxisRoutedEventArgs args = new VideoStateAxisRoutedEventArgs(AxisDownRoutedEvent, this)
+                {
+                    CameraName = videoState.CameraName,
+                    CameraChecked = videoState.CameraChecked
+                };
+                switch((VideoAxisActionType)Enum.Parse(typeof(VideoAxisActionType),viewBox.Name))
+                {
+                    case VideoAxisActionType.Dwon:
+                        args.ActionType = VideoAxisActionType.Dwon;
+                        break;
+                    case VideoAxisActionType.Favorite:
+                        args.ActionType = VideoAxisActionType.Favorite;
+                        break;
+                    case VideoAxisActionType.Open:
+                        args.ActionType = VideoAxisActionType.Open;
+                        break;
+                }
+                this.RaiseEvent(args);
             }
         }
 
@@ -980,6 +1033,51 @@ namespace VideoStateAxis
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(VideoStateAxisControl), new FrameworkPropertyMetadata(typeof(VideoStateAxisControl)));
         }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// 时间轴事件参数类
+    /// </summary>
+    public class VideoStateAxisRoutedEventArgs : RoutedEventArgs
+    {
+        /// <summary>
+        /// 基类构造函数
+        /// </summary>
+        /// <param name="routedEvent"></param>
+        /// <param name="source"></param>
+        public VideoStateAxisRoutedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
+
+        /// <summary>
+        /// 事件类型
+        /// </summary>
+        public VideoAxisActionType ActionType { get; set; }
+
+        /// <summary>
+        /// 相机名称
+        /// </summary>
+        public string CameraName { get; set; }
+
+        /// <summary>
+        /// 相机是否选中
+        /// </summary>
+        public bool CameraChecked { get; set; }
+    }
+
+    /// <summary>
+    /// 时间轴控件事件类型
+    /// </summary>
+    public enum VideoAxisActionType
+    {
+        [Description("下载")]
+        Dwon,
+
+        [Description("收藏")]
+        Favorite,
+
+        [Description("打开")]
+        Open
     }
 
     /// <summary>

@@ -895,7 +895,8 @@
                                             <Condition Property="Selector.IsSelectionActive" Value="True" />
                                             <Condition Property="IsSelected" Value="True" />
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="TextElement.Foreground" Value="Red" />
+                                        <!--<Setter TargetName="Bd" Property="BorderBrush" Value="#D2931A" />
+                                        <Setter TargetName="Bd" Property="BorderThickness" Value="0 0 0 1" />-->
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
                                         <Setter TargetName="Bd" Property="TextElement.Foreground" Value="Red" />
