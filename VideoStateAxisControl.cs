@@ -1119,7 +1119,10 @@ namespace VideoStateAxis
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
+        /// <summary>
+        /// 属性更改事件
+        /// </summary>
+        /// <param name="propertyName"></param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = this.PropertyChanged;
