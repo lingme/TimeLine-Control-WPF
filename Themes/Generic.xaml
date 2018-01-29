@@ -1050,7 +1050,7 @@
                                     <Slider
                                         x:Name="Z_Parid_zoomSlider"
                                         Width="96"
-                                        Margin="10,0,10,0"
+                                        Margin="10,3,10,0"
                                         Maximum="3"
                                         Minimum="1"
                                         Style="{StaticResource sliderStyl}" />
