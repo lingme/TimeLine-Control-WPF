@@ -41,7 +41,7 @@ public class VideoStateItem
     }
 ```
 
-![A](https://github.com/lingme/Picture_Bucket/raw/master/TimeAxis_Control_WPF_img/index_1.jpg)
+![A](https://github.com/lingme/Picture_Bucket/raw/master/TimeAxis_Control_WPF_img/index_2.jpg)
 
 
 
