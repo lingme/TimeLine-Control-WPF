@@ -387,11 +387,14 @@ namespace VideoStateAxis
         private void RefreshTimeLineLeft(DateTime dt)
         {
             TimeSpan ts = dt - SerStateTime.Date;
-            Canvas.SetLeft(_timeLine,
+            if (_timeLine != null)
+            {
+                Canvas.SetLeft(_timeLine,
                     Dial_Cell_H * (ts.Days == 1 ? 23 : dt.Hour) +
                     Dial_Cell_M * (ts.Days == 1 ? 59 : dt.Minute) +
                     Dial_Cell_S * (ts.Days == 1 ? 59 : dt.Second));
-            _currentTime.Text = dt.ToString(" [ yyyy-MM-dd ] HH:mm:ss");
+                _currentTime.Text = dt.ToString(" [ yyyy-MM-dd ] HH:mm:ss");
+            }
         }
 
         /// <summary>
