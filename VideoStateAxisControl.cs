@@ -111,14 +111,14 @@ namespace VideoStateAxis
             typeof(VideoStateAxisControl),
             new PropertyMetadata(null, OnHistoryVideoSourcesChanged));
 
-        public static readonly DependencyProperty StateTimeProperty = DependencyProperty.Register(
-            "SerStateTime",
+        public static readonly DependencyProperty StartTimeProperty = DependencyProperty.Register(
+            "StartTime",
             typeof(DateTime),
             typeof(VideoStateAxisControl),
             new PropertyMetadata(OnTimeChanged));
 
         public static readonly DependencyProperty EndTimeProperty = DependencyProperty.Register(
-            "SerEndTime",
+            "EndTime",
             typeof(DateTime),
             typeof(VideoStateAxisControl),
             new PropertyMetadata(OnTimeChanged));
@@ -155,16 +155,16 @@ namespace VideoStateAxis
         /// <summary>
         /// 搜索历史视频开始时间
         /// </summary>
-        public DateTime SerStateTime
+        public DateTime StartTime
         {
-            get { return (DateTime)GetValue(StateTimeProperty); }
-            set { SetValue(StateTimeProperty, value); }
+            get { return (DateTime)GetValue(StartTimeProperty); }
+            set { SetValue(StartTimeProperty, value); }
         }
 
         /// <summary>
         /// 搜索历史视频结束时间
         /// </summary>
-        public DateTime SerEndTime
+        public DateTime EndTime
         {
             get { return (DateTime)GetValue(EndTimeProperty); }
             set { SetValue(EndTimeProperty, value); }
@@ -386,7 +386,7 @@ namespace VideoStateAxis
         /// <param name="dt"></param>
         private void RefreshTimeLineLeft(DateTime dt)
         {
-            TimeSpan ts = dt - SerStateTime.Date;
+            TimeSpan ts = dt - StartTime.Date;
             if (_timeLine != null)
             {
                 Canvas.SetLeft(_timeLine,
@@ -644,7 +644,7 @@ namespace VideoStateAxis
         /// <param name="x">指针在Canvas容器中的Left坐标值</param>
         private DateTime XToDateTime(double point_x)
         {
-            DateTime dt = SerStateTime.Date;
+            DateTime dt = StartTime.Date;
             double time;
             int H, M, S;
             time = point_x / Dial_Cell_H;
@@ -675,8 +675,8 @@ namespace VideoStateAxis
         /// </summary>
         private void InitiaClipTime()
         {
-            ClipStartTime = ClipStartTime.Year == DateTime.Parse("0001/1/1 0:00:00").Year ? SerStateTime.Date : ClipStartTime;
-            ClipEndTime = ClipEndTime.Year == DateTime.Parse("0001/1/1 0:00:00").Year ? SerStateTime.Date.AddDays(1) : ClipEndTime;
+            ClipStartTime = ClipStartTime.Year == DateTime.Parse("0001/1/1 0:00:00").Year ? StartTime.Date : ClipStartTime;
+            ClipEndTime = ClipEndTime.Year == DateTime.Parse("0001/1/1 0:00:00").Year ? StartTime.Date.AddDays(1) : ClipEndTime;
         }
 
         /// <summary>
@@ -684,23 +684,29 @@ namespace VideoStateAxis
         /// </summary>
         private void InitiaListBox_ScrollChanged()
         {
-            Decorator carmeraborder = VisualTreeHelper.GetChild(_cameraListBox, 0) as Decorator;
-            if (carmeraborder != null)
+            if (_cameraListBox != null)
             {
-                _cameraScrollViewer = carmeraborder.Child as ScrollViewer;
-                if (_cameraScrollViewer != null)
+                Decorator carmeraborder = VisualTreeHelper.GetChild(_cameraListBox, 0) as Decorator;
+                if (carmeraborder != null)
                 {
-                    _cameraScrollViewer.ScrollChanged += _cameraScrollViewer_ScrollChanged;
+                    _cameraScrollViewer = carmeraborder.Child as ScrollViewer;
+                    if (_cameraScrollViewer != null)
+                    {
+                        _cameraScrollViewer.ScrollChanged += _cameraScrollViewer_ScrollChanged;
+                    }
                 }
             }
 
-            Decorator downborder = VisualTreeHelper.GetChild(_downButtonListBox, 0) as Decorator;
-            if (downborder != null)
+            if (_downButtonListBox != null)
             {
-                _downScrollViewer = downborder.Child as ScrollViewer;
-                if (_downScrollViewer != null)
+                Decorator downborder = VisualTreeHelper.GetChild(_downButtonListBox, 0) as Decorator;
+                if (downborder != null)
                 {
-                    _downScrollViewer.ScrollChanged += _downScrollViewer_ScrollChanged;
+                    _downScrollViewer = downborder.Child as ScrollViewer;
+                    if (_downScrollViewer != null)
+                    {
+                        _downScrollViewer.ScrollChanged += _downScrollViewer_ScrollChanged;
+                    }
                 }
             }
         }
@@ -719,7 +725,7 @@ namespace VideoStateAxis
         /// </summary>
         private void ClipStartTimeChanged(DateTime dt)
         {
-            TimeSpan ts = dt - SerStateTime.Date;
+            TimeSpan ts = dt - StartTime.Date;
             if (ts.Days <= 1 && ts.Seconds >= 0 && _clipStackPanel != null)
             {
                 double left = Dial_Cell_H * (ts.Days == 1 ? 23 : dt.Hour) + Dial_Cell_M * (ts.Days == 1 ? 59 : dt.Minute) + Dial_Cell_S * (ts.Days == 1 ? 59 : dt.Second);
@@ -746,7 +752,7 @@ namespace VideoStateAxis
         /// </summary>
         private void InitializationNewtTimeLine()
         {
-            if (!double.IsNaN(Canvas.GetLeft(_timeLine)))
+            if (_timeLine != null && !double.IsNaN(Canvas.GetLeft(_timeLine)))
             {
                 RefreshTimeLineLeft(AxisTime);
             }
@@ -818,7 +824,7 @@ namespace VideoStateAxis
         /// </summary>
         private void DisplayData(Dictionary<KeyValuePair<int, int>, bool> dic)
         {
-            DateTime serTime = SerStateTime;
+            DateTime serTime = StartTime;
             Canvas TimeCanvas = new Canvas() { Width = (_scrollViewer.ActualWidth - 10) * Slider_Magnification };
             foreach (var item in dic)
             {
@@ -937,7 +943,7 @@ namespace VideoStateAxis
             {
                 VideoStateAxisRoutedEventArgs args = new VideoStateAxisRoutedEventArgs(AxisDownRoutedEvent, this)
                 {
-                    CameraName = videoState.CameraName,
+                    CamInfo = videoState.CamInfo,
                     CameraChecked = videoState.CameraChecked
                 };
                 switch ((VideoAxisActionType)Enum.Parse(typeof(VideoAxisActionType), viewBox.Name))
@@ -989,7 +995,7 @@ namespace VideoStateAxis
             }
             if ((_currentTime = GetTemplateChild(Parid_currentTime) as TextBlock) != null)
             {
-                _currentTime.Text = SerStateTime.ToString("yyyy-MM-dd 00:00:00");
+                _currentTime.Text = StartTime.ToString("yyyy-MM-dd 00:00:00");
             }
             if ((_clipEndBorder = GetTemplateChild(Parid_clipEndBorder) as Border) != null)
             {
@@ -1063,7 +1069,7 @@ namespace VideoStateAxis
         /// <summary>
         /// 相机名称
         /// </summary>
-        public string CameraName { get; set; }
+        public CameraInfo CamInfo { get; set; }
 
         /// <summary>
         /// 相机是否选中
@@ -1091,14 +1097,14 @@ namespace VideoStateAxis
     /// </summary>
     public class VideoStateItem : INotifyPropertyChanged
     {
-        private string _cameraName;
+        private CameraInfo _camInfo;
         /// <summary>
         /// 相机名称
         /// </summary>
-        public string CameraName
+        public CameraInfo CamInfo
         {
-            get => _cameraName;
-            set { _cameraName = value; OnPropertyChanged("CameraName"); }
+            get => _camInfo;
+            set { _camInfo = value; OnPropertyChanged("CamInfo"); }
         }
 
         private bool _cameraChedcked;
@@ -1122,10 +1128,7 @@ namespace VideoStateAxis
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        /// <summary>
-        /// 属性更改事件
-        /// </summary>
-        /// <param name="propertyName"></param>
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = this.PropertyChanged;
