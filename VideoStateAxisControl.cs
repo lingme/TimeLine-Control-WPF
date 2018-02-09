@@ -106,10 +106,10 @@ namespace VideoStateAxis
 
         #region DependencyProperty 依赖项属性
         public static readonly DependencyProperty HistoryVideoSourceProperty = DependencyProperty.Register(
-            "HistoryVideoSources",
+            "HisVideoSources",
             typeof(ObservableCollection<VideoStateItem>),
             typeof(VideoStateAxisControl),
-            new PropertyMetadata(null, OnHistoryVideoSourcesChanged));
+            new PropertyMetadata(new ObservableCollection<VideoStateItem>(), OnHistoryVideoSourcesChanged));
 
         public static readonly DependencyProperty StartTimeProperty = DependencyProperty.Register(
             "StartTime",
@@ -209,7 +209,7 @@ namespace VideoStateAxis
         /// <summary>
         /// 历史视频来源列表
         /// </summary>
-        public ObservableCollection<VideoStateItem> HistoryVideoSources
+        public ObservableCollection<VideoStateItem> HisVideoSources
         {
             get { return (ObservableCollection<VideoStateItem>)GetValue(HistoryVideoSourceProperty); }
             set { SetValue(HistoryVideoSourceProperty, value); }
@@ -269,6 +269,12 @@ namespace VideoStateAxis
             typeof(EventHandler<VideoStateAxisRoutedEventArgs>),
             typeof(VideoStateAxisControl));
 
+        public static readonly RoutedEvent DragTimeLineRoutedEvent = EventManager.RegisterRoutedEvent(
+            "DragTimeLine",
+            RoutingStrategy.Bubble,
+            typeof(EventHandler<VideoStateAxisRoutedEventArgs>),
+            typeof(VideoStateAxisControl));
+
         /// <summary>
         /// 下载路由事件
         /// </summary>
@@ -276,6 +282,15 @@ namespace VideoStateAxis
         {
             add { this.AddHandler(AxisDownRoutedEvent, value); }
             remove { this.RemoveHandler(AxisDownRoutedEvent, value); }
+        }
+
+        /// <summary>
+        /// 指针拖动事件
+        /// </summary>
+        public event RoutedEventHandler DragTimeLine
+        {
+            add { this.AddHandler(DragTimeLineRoutedEvent, value); }
+            remove { this.RemoveHandler(DragTimeLineRoutedEvent, value); }
         }
 
         #endregion
@@ -304,15 +319,15 @@ namespace VideoStateAxis
         private static void OnHistoryVideoSourcesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             VideoStateAxisControl AxisOb = d as VideoStateAxisControl;
-            if (AxisOb.HistoryVideoSources != null && AxisOb.HistoryVideoSources.Count() > 0)
+            if (AxisOb.HisVideoSources != null && AxisOb.HisVideoSources.Count() > 0)
             {
-                AxisOb.HistoryVideoSources.CollectionChanged += (s, o) =>
-                {
-                    AxisOb.AddHisPie();
-                    AxisOb.InitiaListBox_ScrollChanged();
-                };
                 AxisOb.InitializeAxis();
             }
+            AxisOb.HisVideoSources.CollectionChanged += (s, o) =>
+            {
+                AxisOb.AddHisPie();
+                AxisOb.InitiaListBox_ScrollChanged();
+            };
         }
 
         /// <summary>
@@ -628,6 +643,18 @@ namespace VideoStateAxis
         }
 
         /// <summary>
+        /// 发布指针拖动路由事件
+        /// </summary>
+        private void SendDragTimeLineRoutedEvent()
+        {
+            VideoStateAxisRoutedEventArgs args = new VideoStateAxisRoutedEventArgs(DragTimeLineRoutedEvent, this)
+            {
+                TimeLine = AxisTime
+            };
+            this.RaiseEvent(args);
+        }
+
+        /// <summary>
         /// 指针弹起
         /// </summary>
         /// <param name="sender"></param>
@@ -636,6 +663,7 @@ namespace VideoStateAxis
         {
             _currentTime.Visibility = Visibility.Collapsed;
             _timePoint.ReleaseMouseCapture();
+            SendDragTimeLineRoutedEvent();
         }
 
         /// <summary>
@@ -808,10 +836,10 @@ namespace VideoStateAxis
         /// </summary>
         private void AddHisPie()
         {
-            if (_videoHistoryPanel != null && HistoryVideoSources != null && HistoryVideoSources.Count() > 0)
+            if (_videoHistoryPanel != null && HisVideoSources != null && HisVideoSources.Count() > 0)
             {
                 _videoHistoryPanel.Children.Clear();
-                foreach (var item in HistoryVideoSources)
+                foreach (var item in HisVideoSources)
                 {
                     Dictionary<KeyValuePair<int, int>, bool> dic = MathToTimeSp(item.AxisHistoryTimeList);
                     DisplayData(dic);
@@ -890,7 +918,7 @@ namespace VideoStateAxis
         {
             FrameworkElementFactory frameworkElementFactory = new FrameworkElementFactory(typeof(StackPanel));
             frameworkElementFactory.SetValue(StackPanel.HeightProperty, 16.00);
-            frameworkElementFactory.SetValue(StackPanel.MarginProperty, new Thickness(0, 3, 5, 1));
+            frameworkElementFactory.SetValue(StackPanel.MarginProperty, new Thickness(0, 4, 5, 0));
             frameworkElementFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
             return frameworkElementFactory;
         }
@@ -931,7 +959,7 @@ namespace VideoStateAxis
         }
 
         /// <summary>
-        /// 模板事件
+        /// 模板触发路由事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -944,7 +972,8 @@ namespace VideoStateAxis
                 VideoStateAxisRoutedEventArgs args = new VideoStateAxisRoutedEventArgs(AxisDownRoutedEvent, this)
                 {
                     CamInfo = videoState.CamInfo,
-                    CameraChecked = videoState.CameraChecked
+                    CameraChecked = videoState.CameraChecked,
+                    DownAndFavoirteHaveVideo = DownAndFavoriteHaveVideo(videoState.AxisHistoryTimeList)
                 };
                 switch ((VideoAxisActionType)Enum.Parse(typeof(VideoAxisActionType), viewBox.Name))
                 {
@@ -959,6 +988,32 @@ namespace VideoStateAxis
                         break;
                 }
                 this.RaiseEvent(args);
+            }
+        }
+
+        /// <summary>
+        /// 判断是否有视频
+        /// </summary>
+        /// <param name="VideoList"></param>
+        /// <returns></returns>
+        private bool DownAndFavoriteHaveVideo(char[] VideoList)
+        {
+            if (!ClipOff)
+            {
+                return VideoList.Select(x => x == '\0' ? x = '0' : '1').ToArray().Contains('1') ? true : false;
+            }
+            else
+            {
+                Dictionary<KeyValuePair<int, int>, bool> dic = MathToTimeSp(VideoList);
+                DateTime serTime = StartTime;
+                List<bool> booList = new List<bool>();
+                foreach (var item in dic)
+                {
+                    DateTime end_Time = serTime.AddMinutes(item.Key.Value);
+                    booList.Add(((serTime < ClipStartTime && ClipStartTime < end_Time) || (serTime < ClipEndTime && ClipEndTime < end_Time)) && item.Value ? true : false);
+                    serTime = serTime.AddMinutes(item.Key.Value);
+                }
+                return booList.Contains(true) ? true : false;
             }
         }
 
@@ -1027,12 +1082,12 @@ namespace VideoStateAxis
             }
             if ((_cameraListBox = GetTemplateChild(Parid_cameraListBox) as ListBox) != null)
             {
-                Binding binding = new Binding("HistoryVideoSources") { Source = this };
+                Binding binding = new Binding("HisVideoSources") { Source = this };
                 _cameraListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
             }
             if ((_downButtonListBox = GetTemplateChild(Parid_downButtonListBox) as ListBox) != null)
             {
-                Binding binding = new Binding("HistoryVideoSources") { Source = this };
+                Binding binding = new Binding("HisVideoSources") { Source = this };
                 _downButtonListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
                 Down_ListBox_Template();
             }
@@ -1075,6 +1130,16 @@ namespace VideoStateAxis
         /// 相机是否选中
         /// </summary>
         public bool CameraChecked { get; set; }
+
+        /// <summary>
+        /// 指针时间
+        /// </summary>
+        public DateTime TimeLine { get; set; }
+
+        /// <summary>
+        /// 下载或者收藏范围内是否有视频
+        /// </summary>
+        public bool DownAndFavoirteHaveVideo { get; set; }
     }
 
     /// <summary>

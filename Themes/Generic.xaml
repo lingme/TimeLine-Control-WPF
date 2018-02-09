@@ -1200,7 +1200,7 @@
                                                         Cursor="SizeWE" />
                                                     <Border
                                                         x:Name="Z_Parid_clipAreaBorder"
-                                                        Width="{Binding ActualWidth, ElementName=Z_Parid_axisCanvas}"
+                                                        Width="100"
                                                         Background="#FF777777"
                                                         Cursor="Hand"
                                                         ToolTip="剪辑控制条" />
