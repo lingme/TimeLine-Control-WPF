@@ -1,4 +1,4 @@
-# TimeAxis_Control_WPF
+# TimeAxis Control WPF
 ---
 The WPF-like control of the Adobe AE timeline is completely based on the binding of dependent attributes, which is very extensible and can be modified by itself
 
