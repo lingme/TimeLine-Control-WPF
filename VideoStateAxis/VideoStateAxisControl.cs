@@ -971,7 +971,6 @@ namespace VideoStateAxis
             {
                 VideoStateAxisRoutedEventArgs args = new VideoStateAxisRoutedEventArgs(AxisDownRoutedEvent, this)
                 {
-                    CamInfo = videoState.CamInfo,
                     CameraChecked = videoState.CameraChecked,
                     DownAndFavoirteHaveVideo = DownAndFavoriteHaveVideo(videoState.AxisHistoryTimeList)
                 };
@@ -1122,11 +1121,6 @@ namespace VideoStateAxis
         public VideoAxisActionType ActionType { get; set; }
 
         /// <summary>
-        /// 相机名称
-        /// </summary>
-        public CameraInfo CamInfo { get; set; }
-
-        /// <summary>
         /// 相机是否选中
         /// </summary>
         public bool CameraChecked { get; set; }
@@ -1157,26 +1151,16 @@ namespace VideoStateAxis
         Open
     }
 
-    public class CameraInfo
-    {
-        public bool CameraChecked;
-
-        public string CameraName;
-    }
-
     /// <summary>
     /// 时间轴对象
     /// </summary>
     public class VideoStateItem : INotifyPropertyChanged
     {
-        private CameraInfo _camInfo;
-        /// <summary>
-        /// 相机名称
-        /// </summary>
-        public CameraInfo CamInfo
+        private string _cameraName;
+        public string CameraName
         {
-            get => _camInfo;
-            set { _camInfo = value; OnPropertyChanged("CamInfo"); }
+            get => _cameraName;
+            set { _cameraName = value;OnPropertyChanged("CameraName"); }
         }
 
         private bool _cameraChedcked;
