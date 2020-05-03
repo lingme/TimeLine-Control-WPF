@@ -1,6 +1,6 @@
 # TimeAxis_Control_WPF
 ---
-WPF实现的类似Adobe AE时间轴的控件，完全基于依赖属性绑定，扩展性非常强，可自行修改
+The WPF-like control of the Adobe AE timeline is completely based on the binding of dependent attributes, which is very extensible and can be modified by itself
 
 #### View视图代码：
 ```C {.line-numbers}
