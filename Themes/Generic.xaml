@@ -1002,7 +1002,7 @@
         </Style.Triggers>
     </Style>
 
-    <local:BoolConveterVisibility x:Key="BoolConveterVisibility" />
+    <BooleanToVisibilityConverter x:Key="BoolConveterVisibility"></BooleanToVisibilityConverter>
 
     <!--  VideoStateAxisControl控件模板  -->
     <Style x:Name="VideoST" TargetType="{x:Type local:VideoStateAxisControl}">
