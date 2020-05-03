@@ -1157,6 +1157,13 @@ namespace VideoStateAxis
         Open
     }
 
+    public class CameraInfo
+    {
+        public bool CameraChecked;
+
+        public string CameraName;
+    }
+
     /// <summary>
     /// 时间轴对象
     /// </summary>
